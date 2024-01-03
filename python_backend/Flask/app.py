@@ -380,7 +380,6 @@ def my_history():
 
 
 
-
 @jwt_required()
 @app.route('/my_parked_cars', methods=['GET'])
 def my_parked_cars():
