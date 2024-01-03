@@ -10,6 +10,7 @@ from flask import Flask, jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app) 
@@ -17,9 +18,20 @@ bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Change this to a random secret key
 jwt = JWTManager(app)
 
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+db_user = config.get('DB_USER')
+db_password = config.get('DB_PASSWORD')
+db_host = config.get('DB_HOST')
+db_name = config.get('DB_NAME')
+
+
+connection_string = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
+
 
 # Database setup
-engine = create_engine('mysql+pymysql://root:a2617512@localhost/park_now')
+engine = create_engine(connection_string)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
