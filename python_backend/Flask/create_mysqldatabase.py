@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from sqlalchemy.orm import declarative_base
+import json
 
 client = MongoClient()
 
@@ -12,8 +13,20 @@ mongo_db = client['park_now']
 
 collection = mongo_db['parkings']
 
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+db_user = config.get('DB_USER')
+db_password = config.get('DB_PASSWORD')
+db_host = config.get('DB_HOST')
+db_name = config.get('DB_NAME')
+
+
+connection_string = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
+
+
 Base = declarative_base()
-db = create_engine('mysql+pymysql://root:a2617512@localhost/park_now')
+db = create_engine(connection_string)
 
 class User(Base):
     __tablename__ = 'user'
