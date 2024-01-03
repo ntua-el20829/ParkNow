@@ -4,15 +4,16 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Maps extends StatefulWidget {
-  const Maps({super.key, required int user_id});
+  const Maps({Key? key}) : super(key: key);
 
   @override
   State<Maps> createState() => _MapsState();
 }
 
 class _MapsState extends State<Maps> {
-  final storage = new FlutterSecureStorage();
-  int? userId; // This will hold the extracted user ID
+  int? userId;
+  final storage =
+      new FlutterSecureStorage(); // Ensure you have an instance of FlutterSecureStorage
 
   @override
   void initState() {
@@ -20,16 +21,20 @@ class _MapsState extends State<Maps> {
     _loadUserId(); // Load the user ID when the widget is initialized
   }
 
-  // This function reads the JWT from secure storage, decodes it, and extracts the user ID
-  _loadUserId() async {
+  void _loadUserId() async {
     String? token =
         await storage.read(key: "jwt"); // Read the JWT from secure storage
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       Map<String, dynamic> decodedToken = Jwt.parseJwt(token); // Decode the JWT
       setState(() {
-        userId = int.tryParse(decodedToken['id']
+        userId = int.tryParse(decodedToken['sub']
             .toString()); // Extract the user ID and ensure it's an integer
       });
+      print(userId);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User has not granted access or timed out')));
+      Navigator.of(context).pushReplacementNamed('/');
     }
   }
 
@@ -44,11 +49,28 @@ class _MapsState extends State<Maps> {
         ),
         centerTitle: true,
       ),
-      // Display the user ID if it's not null; otherwise, show a loading message
       body: Center(
-        child: Text(userId != null
-            ? 'This is the Maps page. User ID: $userId'
-            : 'Loading...'),
+        child: userId != null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/map_icon.svg', // Replace with your map icon asset
+                    width: 100,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Welcome to Maps!',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'User ID: $userId',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
+              )
+            : CircularProgressIndicator(), // Show a loading indicator while waiting
       ),
     );
   }

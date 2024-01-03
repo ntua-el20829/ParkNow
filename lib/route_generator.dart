@@ -21,15 +21,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SignUp());
 
       case '/maps':
-        // When routing to '/maps' page, we will pass the user_id
-        // as an argument. Check whether the argument is an integer
-        if (args is int) {
-          return MaterialPageRoute(
-            builder: (_) => Maps(
-              user_id: args,
-            ),
-          );
-        }
+        return MaterialPageRoute(builder: (_) => Maps());
     }
 
     // In any other case throw an error

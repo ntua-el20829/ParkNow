@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('User successfully created')));
-        Navigator.of(context).pushReplacementNamed('/', arguments: 1);
+        Navigator.of(context).pushReplacementNamed('/');
       } else if (response.statusCode == 409) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('User already exists')));

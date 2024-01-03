@@ -29,10 +29,14 @@ class _LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      await storage.write(key: "jwt", value: jsonResponse['access_token']);
-      Navigator.of(context).pushReplacementNamed('/maps', arguments: 1);
+      var token = jsonResponse['access_token'];
+      await storage.write(key: "jwt", value: token);
+
+      // Navigate to the /maps route
+      Navigator.of(context).pushReplacementNamed('/maps');
     } else {
-      showMessage('Invalid email or password');
+      final snackBar = SnackBar(content: Text('Invalid email or password'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

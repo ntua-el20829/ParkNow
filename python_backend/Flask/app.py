@@ -12,6 +12,7 @@ from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
 import json
 
+
 app = Flask(__name__)
 CORS(app) 
 bcrypt = Bcrypt(app)
@@ -75,7 +76,9 @@ def login():
 
     if user and bcrypt.check_password_hash(user.password, password):
         # Create JWT token
+       
         access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=1))
+        print(access_token)
         return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
     else:
         return jsonify({'message': 'Invalid username or password'}), 401
@@ -86,7 +89,7 @@ def login():
 @jwt_required()
 def favourites():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     if request.method == 'GET':
         # Query the database for the user's favourite parkings
@@ -139,7 +142,7 @@ def favourites():
 @app.route('/my_cars', methods=['GET','POST','DELETE'])
 def my_cars():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     if request.method == 'GET':
         # Retrieve the user's cars
@@ -218,7 +221,7 @@ def my_cars():
 @app.route('/delete_account', methods=['DELETE'])
 def delete_account():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     # Start a transaction
     try:
@@ -263,7 +266,7 @@ def delete_account():
 @app.route('/edit_info', methods=['PUT']) 
 def update_info():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     # Retrieve the data to update from the request
     data = request.json
@@ -305,7 +308,7 @@ def update_info():
 @app.route('/my_reviews', methods=['GET'])
 def my_reviews():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     try:
         # Query the database for reviews made by the user
@@ -338,7 +341,7 @@ def my_reviews():
 @app.route('/my_history', methods=['GET'])
 def my_history():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     try:
         # Query for user's reservations and related data
@@ -384,7 +387,7 @@ def my_history():
 @app.route('/my_parked_cars', methods=['GET'])
 def my_parked_cars():
     current_user = get_jwt_identity()
-    user_id = current_user['id']
+    user_id = current_user['sub']
 
     try:
         # Query for active reservations and related car data for the current user
