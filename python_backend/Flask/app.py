@@ -9,8 +9,10 @@ from sqlalchemy.exc import IntegrityError,SQLAlchemyError
 from flask import Flask, jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) 
 bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Change this to a random secret key
 jwt = JWTManager(app)
@@ -29,7 +31,6 @@ def signup():
     email = data.get('email')
     password = data.get('password')
     phone_number = data.get('phone_number')
-    birthday = data.get('birthday')
 
     # Check if user already exists
     existing_user = session.query(User).filter_by(email=email).first()
@@ -45,7 +46,6 @@ def signup():
         email=email,
         password=hashed_password,
         phone_number=phone_number,
-        birthday=birthday
     )
     session.add(new_user)
     session.commit()
@@ -63,7 +63,7 @@ def login():
 
     if user and bcrypt.check_password_hash(user.password, password):
         # Create JWT token
-        access_token = create_access_token(identity={'id': user.id, 'email': user.email}, expires_delta=timedelta(hours=1))        
+        access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=1))
         return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
     else:
         return jsonify({'message': 'Invalid username or password'}), 401
