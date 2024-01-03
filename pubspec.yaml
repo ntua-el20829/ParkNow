@@ -28,7 +28,7 @@ flutter:
   assets:
     - assets/icons/full_logo.svg
     - assets/icons/logo.svg
-
+    - assets/images/back_arrow.png
   fonts:
     - family: Inter
       fonts:

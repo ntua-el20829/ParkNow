@@ -50,6 +50,12 @@ class _LoginState extends State<Login> {
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 140,
+          leading: IconButton(
+            icon: Image.asset('assets/images/back_arrow.png'),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
           title: SvgPicture.asset(
             'assets/icons/full_logo.svg',
             fit: BoxFit.cover,
