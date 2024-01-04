@@ -4,6 +4,7 @@ import 'package:park_now/screens/favourites.dart';
 import 'package:park_now/screens/launch_page.dart';
 import 'package:park_now/screens/login.dart';
 import 'package:park_now/screens/maps.dart';
+import 'package:park_now/screens/more.dart';
 import 'package:park_now/screens/sign_up.dart';
 
 class RouteGenerator {
@@ -26,6 +27,9 @@ class RouteGenerator {
 
       case '/favourites':
         return MaterialPageRoute(builder: (_) => FavouritesScreen());
+
+      case '/more':
+        return MaterialPageRoute(builder: (_) => MoreScreen());
     }
 
     // In any other case throw an error

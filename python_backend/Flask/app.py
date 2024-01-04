@@ -255,7 +255,7 @@ def delete_account():
         return jsonify({'message': 'Could not delete account'}), 500
     finally:
         session.execute(text('SET FOREIGN_KEY_CHECKS=1;')) # To assure that it is going to be set again correctly ...
-        session.close()
+        
 
 
        
