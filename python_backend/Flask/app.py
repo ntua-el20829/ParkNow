@@ -299,7 +299,7 @@ def update_info():
         # Log the error for debugging
         print(str(e))
         return jsonify({'message': 'Failed to update user information', 'error': str(e)}), 500
-    
+       
 
 
 @app.route('/my_reviews', methods=['GET'])
@@ -422,10 +422,6 @@ def my_parked_cars():
         return jsonify({'message': 'Failed to retrieve parked cars', 'error': str(e)}), 500
     
 
-    
-
-
-    
 session.close()
 
 if __name__ == '__main__':
