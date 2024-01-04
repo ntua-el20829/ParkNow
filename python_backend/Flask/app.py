@@ -88,61 +88,56 @@ def login():
 @app.route('/favourites', methods=['GET', 'DELETE'])
 @jwt_required()
 def favourites():
-    current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = int(get_jwt_identity()) 
+    try:
+        if request.method == 'GET':
+            # Join with the Parking table to access the parking details
+            favourites = session.query(Favourite)\
+                .join(Parking, Favourite.parking_id == Parking.id)\
+                .filter(Favourite.user_id == user_id)\
+                .all()
+                                                                       
+            favourite_parkings = [{'id': fav.parking_id, 'name': f"parking_{fav.parking_id}"} for fav in favourites]
+           
+            return jsonify({
+                'message': 'Successfully retrieved favourites',
+                'user_id': user_id,
+                'favourites': favourite_parkings
+            }), 200
 
-    if request.method == 'GET':
-        # Query the database for the user's favourite parkings
-        favourites = session.query(Favourite)\
-            .options(joinedload(Favourite.parking))\
-            .filter(Favourite.user_id == user_id)\
-            .all()
+        elif request.method == 'DELETE':
+            parking_id_to_delete = request.json.get('parking_id')
 
-        # Construct a list of favourite parking details
-        favourite_parkings = []
-        for favourite in favourites:
-            parking = favourite.parking
-            favourite_parkings.append({
-                'id': parking.id,
-                'name': parking.name,
-            })
-        
-        return jsonify({
-            'message': 'Successfully retrieved favourites',
-            'user_id': user_id,
-            'favourites': favourite_parkings
-        }), 200
+            if not parking_id_to_delete:
+                return jsonify({'message': 'Parking ID is required for deletion'}), 400
 
-    elif request.method == 'DELETE':
-        # Retrieve the parking ID from the request to identify which favourite to delete
-        parking_id_to_delete = request.json.get('parking_id')
+            favourite_to_delete = session.query(Favourite)\
+                .filter(Favourite.user_id == user_id, Favourite.parking_id == parking_id_to_delete)\
+                .first()
 
-        if not parking_id_to_delete:
-            return jsonify({'message': 'Parking ID is required for deletion'}), 400
+            if not favourite_to_delete:
+                return jsonify({'message': 'Favourite parking not found'}), 404
 
-        # Find the favourite record in the database
-        favourite_to_delete = session.query(Favourite)\
-            .filter(Favourite.user_id == user_id, Favourite.parking_id == parking_id_to_delete)\
-            .first()
+            session.delete(favourite_to_delete)
+            session.commit()
 
-        if not favourite_to_delete:
-            return jsonify({'message': 'Favourite parking not found'}), 404
+            return jsonify({
+                'message': 'Successfully deleted favourite',
+                'parking_id': parking_id_to_delete
+            }), 200
 
-        # Delete the favourite from the database
-        session.delete(favourite_to_delete)
-        session.commit()
+    except Exception as e:
+        # Log the error for debugging purposes
+        print(f"An error occurred: {e}")
+        return jsonify({'message': f'An error occurred while processing your request: {e}'}), 500
 
-        return jsonify({
-            'message': 'Successfully deleted favourite',
-            'parking_id': parking_id_to_delete
-        }), 200
-        
 
-@jwt_required()
+
 @app.route('/my_cars', methods=['GET','POST','DELETE'])
+@jwt_required()
 def my_cars():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     if request.method == 'GET':
         # Retrieve the user's cars
@@ -217,11 +212,12 @@ def my_cars():
 
 
 
-@jwt_required()
+
 @app.route('/delete_account', methods=['DELETE'])
+@jwt_required()
 def delete_account():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     # Start a transaction
     try:
@@ -262,11 +258,12 @@ def delete_account():
         session.close()
 
 
-@jwt_required()        
+       
 @app.route('/edit_info', methods=['PUT']) 
+@jwt_required() 
 def update_info():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     # Retrieve the data to update from the request
     data = request.json
@@ -304,11 +301,12 @@ def update_info():
         return jsonify({'message': 'Failed to update user information', 'error': str(e)}), 500
     
 
-@jwt_required()
+
 @app.route('/my_reviews', methods=['GET'])
+@jwt_required()
 def my_reviews():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     try:
         # Query the database for reviews made by the user
@@ -337,11 +335,12 @@ def my_reviews():
 
 
 
-@jwt_required()
+
 @app.route('/my_history', methods=['GET'])
+@jwt_required()
 def my_history():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     try:
         # Query for user's reservations and related data
@@ -383,11 +382,12 @@ def my_history():
 
 
 
-@jwt_required()
+
 @app.route('/my_parked_cars', methods=['GET'])
+@jwt_required()
 def my_parked_cars():
     current_user = get_jwt_identity()
-    user_id = current_user['sub']
+    user_id = current_user
 
     try:
         # Query for active reservations and related car data for the current user

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:park_now/screens/error_page.dart';
+import 'package:park_now/screens/favourites.dart';
 import 'package:park_now/screens/launch_page.dart';
 import 'package:park_now/screens/login.dart';
 import 'package:park_now/screens/maps.dart';
@@ -22,6 +23,9 @@ class RouteGenerator {
 
       case '/maps':
         return MaterialPageRoute(builder: (_) => Maps());
+
+      case '/favourites':
+        return MaterialPageRoute(builder: (_) => FavouritesScreen());
     }
 
     // In any other case throw an error
