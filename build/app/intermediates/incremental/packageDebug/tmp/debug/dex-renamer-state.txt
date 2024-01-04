@@ -1,4 +1,4 @@
-#Thu Jan 04 21:17:04 EET 2024
+#Thu Jan 04 23:34:48 EET 2024
 base.0=/Users/stefanosgiannakopoulos/Desktop/flutterProjects/ParkNow/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

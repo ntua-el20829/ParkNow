@@ -5,6 +5,7 @@ import 'package:park_now/screens/launch_page.dart';
 import 'package:park_now/screens/login.dart';
 import 'package:park_now/screens/maps.dart';
 import 'package:park_now/screens/more.dart';
+import 'package:park_now/screens/profile.dart';
 import 'package:park_now/screens/sign_up.dart';
 
 class RouteGenerator {
@@ -30,6 +31,12 @@ class RouteGenerator {
 
       case '/more':
         return MaterialPageRoute(builder: (_) => MoreScreen());
+
+      case '/parked_cars':
+      //  return MaterialPageRoute(builder: (_) => ParkedCarsScreen());
+
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => ProfileScreen());
     }
 
     // In any other case throw an error
