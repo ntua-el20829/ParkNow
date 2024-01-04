@@ -258,7 +258,6 @@ def delete_account():
         
 
 
-       
 @app.route('/edit_info', methods=['PUT']) 
 @jwt_required() 
 def update_info():
@@ -268,9 +267,9 @@ def update_info():
     # Retrieve the data to update from the request
     data = request.json
     new_username = data.get('username')
+    new_password = data.get('password')
     new_email = data.get('email')
     new_phone_number = data.get('phone_number')
-    new_birthday = data.get('birthday')  # Ensure this is in the correct format
 
     try:
         # Find the user in the database
@@ -281,12 +280,14 @@ def update_info():
         # Update user fields if new values are provided
         if new_username:
             user.username = new_username
+        if new_password:
+            hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            user.password = hashed_password
         if new_email:
             user.email = new_email
         if new_phone_number:
             user.phone_number = new_phone_number
-        if new_birthday:
-            user.birthday = new_birthday
+        
 
         # Commit the changes to the database
         session.commit()

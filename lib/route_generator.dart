@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:park_now/screens/edit_info.dart';
 import 'package:park_now/screens/error_page.dart';
 import 'package:park_now/screens/favourites.dart';
 import 'package:park_now/screens/launch_page.dart';
@@ -37,6 +38,9 @@ class RouteGenerator {
 
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+
+      case '/edit_info':
+        return MaterialPageRoute(builder: (_) => EditInfoScreen());
     }
 
     // In any other case throw an error

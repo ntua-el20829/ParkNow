@@ -93,6 +93,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           ListTile(
+            title: Text('Edit Info'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/edit_info');
+            },
+          ),
+          ListTile(
             title: Text('My cars'),
             onTap: () {
               // Navigate to My Cars screen
@@ -107,13 +113,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             title: Text('History'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/history');
+              //  Navigator.of(context).pushReplacementNamed('/history');
             },
           ),
           ListTile(
             title: Text('My reviews'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/reviews');
+              //  Navigator.of(context).pushReplacementNamed('/reviews');
             },
           ),
           Divider(),
