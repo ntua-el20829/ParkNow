@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="18"
-6-->/Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/flutter_secure_storage-4.2.1/android/src/main/AndroidManifest.xml
+6-->C:\Users\Paraskevi\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_secure_storage-4.2.1\android\src\main\AndroidManifest.xml
 7        android:targetSdkVersion="28" />
-7-->/Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/flutter_secure_storage-4.2.1/android/src/main/AndroidManifest.xml
+7-->C:\Users\Paraskevi\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_secure_storage-4.2.1\android\src\main\AndroidManifest.xml
 8
 9</manifest>

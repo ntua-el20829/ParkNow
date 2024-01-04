@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/stefanosgiannakopoulos/Desktop/flutterProjects/ParkNow/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-pl/values-pl.xml",
+            "outputFile": "C:\\MyFiles\\NTUA\\7th_semester\\HumanComputerInteraction\\project\\ParkNow\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-pl\\values-pl.xml",
             "map": [
                 {
-                    "source": "/Users/stefanosgiannakopoulos/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/values-pl/values-pl.xml",
+                    "source": "C:\\Users\\Paraskevi\\.gradle\\caches\\transforms-3\\acbce933e4b464a5224ed377a62db1f5\\transformed\\core-1.6.0\\res\\values-pl\\values-pl.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
