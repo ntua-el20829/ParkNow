@@ -418,7 +418,7 @@ def my_parked_cars():
             Reservation,
             Car.license_plate,
             Parking.name
-        ).join(Car, Car.id == Reservation.car_id)\
+        ).join(Car, Car.license_plate == Reservation.license_plate)\
         .join(Parking, Parking.id == Reservation.parking_id)\
         .filter(Reservation.user_id == user_id, Reservation.is_valid == True)\
         .all()
