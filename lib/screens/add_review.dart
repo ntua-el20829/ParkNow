@@ -119,7 +119,28 @@ class _AddReviewState extends State<AddReview> {
         backgroundColor: Colors.white,
       ),
 
-        body: Padding(
+        body: ListView(
+        children: [
+
+          
+          Container(
+              padding: EdgeInsets.all(20.0),
+              child: Center(
+                child: Text("Add a new review",
+                  style: TextStyle(
+                  fontFamily: "Inter",
+                  fontWeight: FontWeight.w400,
+                  fontSize: 32,
+                  color: Colors.white,
+                )
+              )),
+              color: const Color.fromRGBO(153, 140, 230, 1),
+            ),
+
+
+        // Review Form
+
+        Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -160,7 +181,7 @@ class _AddReviewState extends State<AddReview> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  maxLines: 5,
+                  maxLines: 8,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -205,6 +226,8 @@ class _AddReviewState extends State<AddReview> {
             ],
           ),
         ),
+        ),
+        ]
         ),
 
         bottomNavigationBar: BottomNavigationBar(
