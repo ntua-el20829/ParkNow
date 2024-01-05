@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:park_now/screens/add_review.dart';
 import 'package:park_now/screens/edit_info.dart';
 import 'package:park_now/screens/error_page.dart';
 import 'package:park_now/screens/favourites.dart';
@@ -7,14 +8,16 @@ import 'package:park_now/screens/login.dart';
 import 'package:park_now/screens/maps.dart';
 import 'package:park_now/screens/more.dart';
 import 'package:park_now/screens/my_cars.dart';
+import 'package:park_now/screens/my_reviews.dart';
 import 'package:park_now/screens/parked_cars.dart';
+import 'package:park_now/screens/parking_page.dart';
 import 'package:park_now/screens/profile.dart';
 import 'package:park_now/screens/sign_up.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in
-    //final args = settings.arguments;
+    final args = settings.arguments;
 
     switch (settings.name) {
       case '/':
@@ -46,6 +49,27 @@ class RouteGenerator {
 
       case '/my_cars':
         return MaterialPageRoute(builder: (_) => MyCarsScreen());
+
+      case '/parking_page':
+        // When routing to '/parking_page' page, we will pass parkingId
+        // as an argument. Check whether the argument is an integer
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => ParkingPage(parkingId: args,),
+            );
+        }
+
+      case '/reviews':
+        return MaterialPageRoute(builder: (_) => MyReviews());
+
+      case '/add_review':
+        // When routing to '/add_review' page, we will pass parkingId
+        // as an argument. Check whether the argument is an integer
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => AddReview(parkingId: args,),
+            );
+        }
     }
 
     // In any other case throw an error

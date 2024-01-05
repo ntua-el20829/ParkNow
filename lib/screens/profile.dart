@@ -119,7 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             title: Text('My reviews'),
             onTap: () {
-              //  Navigator.of(context).pushReplacementNamed('/reviews');
+              Navigator.of(context).pushNamed('/reviews');
             },
           ),
           Divider(),
