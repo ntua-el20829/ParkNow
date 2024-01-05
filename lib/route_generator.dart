@@ -6,6 +6,7 @@ import 'package:park_now/screens/launch_page.dart';
 import 'package:park_now/screens/login.dart';
 import 'package:park_now/screens/maps.dart';
 import 'package:park_now/screens/more.dart';
+import 'package:park_now/screens/my_cars.dart';
 import 'package:park_now/screens/profile.dart';
 import 'package:park_now/screens/sign_up.dart';
 
@@ -41,6 +42,9 @@ class RouteGenerator {
 
       case '/edit_info':
         return MaterialPageRoute(builder: (_) => EditInfoScreen());
+
+      case '/my_cars':
+        return MaterialPageRoute(builder: (_) => MyCarsScreen());
     }
 
     // In any other case throw an error

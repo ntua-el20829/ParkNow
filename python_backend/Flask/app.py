@@ -184,7 +184,7 @@ def my_cars():
         # Delete a vehicle
         data = request.json
         car_id = data.get('car_id')
-
+        
         if not car_id:
             return jsonify({'message': 'Car ID is required'}), 400
 
@@ -303,12 +303,13 @@ def update_info():
        
 
 
-@app.route('/my_reviews', methods=['GET'])
+@app.route('/my_reviews', methods=['GET','POST'])
 @jwt_required()
 def my_reviews():
-    current_user = get_jwt_identity()
-    user_id = current_user
-
+ current_user = get_jwt_identity()
+ user_id = current_user
+ if request.method == 'GET':   
+    
     try:
         # Query the database for reviews made by the user
         user_reviews = session.query(Review).filter(Review.user_id == user_id).all()
@@ -334,7 +335,28 @@ def my_reviews():
         print(str(e))
         return jsonify({'message': 'Failed to retrieve reviews', 'error': str(e)}), 500
 
+ elif request.method == 'POST':
+     try:
+            data = request.json
+            new_review_text = data.get('review_text')
+            new_number_of_stars = data.get('number_of_stars')
+            parking_id = data.get('parking_id')  # Assuming you pass parking_id
 
+            new_review = Review(
+                user_id=user_id,
+                parking_id=parking_id,
+                review=new_review_text,
+                number_of_stars=new_number_of_stars
+            )
+            session.add(new_review)
+            session.commit()
+
+            return jsonify({'message': 'Review added successfully'}), 201
+     except Exception as e:
+            session.rollback()
+            print(str(e))
+            return jsonify({'message': 'Failed to add review', 'error': str(e)}), 500
+    
 
 
 @app.route('/my_history', methods=['GET'])

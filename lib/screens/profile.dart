@@ -84,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         children: <Widget>[
           Container(
-            color: Colors.purple,
+            color: const Color.fromRGBO(153, 140, 230, 1),
             width: double.infinity,
             padding: EdgeInsets.all(16.0),
             child: Text(
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             title: Text('My cars'),
             onTap: () {
-              // Navigate to My Cars screen
+              Navigator.of(context).pushReplacementNamed('/my_cars');
             },
           ),
           ListTile(
