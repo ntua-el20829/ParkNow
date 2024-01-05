@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:park_now/screens/add_review.dart';
 import 'package:park_now/screens/edit_info.dart';
 import 'package:park_now/screens/error_page.dart';
 import 'package:park_now/screens/favourites.dart';
@@ -60,6 +61,15 @@ class RouteGenerator {
 
       case '/reviews':
         return MaterialPageRoute(builder: (_) => MyReviews());
+
+      case '/add_review':
+        // When routing to '/add_review' page, we will pass parkingId
+        // as an argument. Check whether the argument is an integer
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => AddReview(parkingId: args,),
+            );
+        }
     }
 
     // In any other case throw an error

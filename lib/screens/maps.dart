@@ -87,6 +87,30 @@ class _MapsState extends State<Maps> {
                     'User ID: $userId',
                     style: TextStyle(fontSize: 20),
                   ),
+
+              // for debugging reasons 
+              Padding(
+              padding:
+                  const EdgeInsets.only(top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
+                  elevation: 0,
+                  minimumSize: const Size(100, 55),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/parking_page', arguments: 1);
+                },
+                child: const Text("Parking 0",
+                    style: TextStyle(
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w400,
+                      fontSize: 24,
+                      color: Colors.white,
+                    )),
+              ),
+            ),
+            // end
                 ],
               )
             : CircularProgressIndicator(), // Show a loading indicator while waiting
