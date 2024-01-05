@@ -15,6 +15,7 @@ dependencies:
   flutter_svg: ^2.0.9
   flutter_secure_storage: ^4.2.1
   jwt_decode: ^0.3.1
+  flutter_rating_bar: ^4.0.1
   
 
 dev_dependencies:
