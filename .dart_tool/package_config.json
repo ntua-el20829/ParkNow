@@ -62,6 +62,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "flutter_rating_bar",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/flutter_rating_bar-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "flutter_secure_storage",
       "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/flutter_secure_storage-4.2.1",
       "packageUri": "lib/",
@@ -230,7 +236,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-01-03T21:01:38.927754Z",
+  "generated": "2024-01-04T23:03:46.363665Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }
