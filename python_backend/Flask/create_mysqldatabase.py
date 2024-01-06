@@ -77,7 +77,7 @@ class Parking(Base):
 class Review(Base):
     __tablename__ = 'reviews'
 
-    id = Column(Integer, primary_key=True, autoincrement=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     review = Column(Text, nullable=False)
     number_of_stars = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))

@@ -21,7 +21,7 @@ class _MyReviewsState extends State<MyReviews> {
   // Assign _selectedIndex to 0
   int _selectedIndex = 0;
 
-    void _onItemTapped(int index) {
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -88,109 +88,99 @@ class _MyReviewsState extends State<MyReviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 140,
-        leading: IconButton(
-          icon: Image.asset('assets/images/back_arrow.png'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        appBar: AppBar(
+          toolbarHeight: 140,
+          leading: IconButton(
+            icon: Image.asset('assets/images/back_arrow.png'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: SvgPicture.asset(
+            'assets/icons/logo.svg',
+            fit: BoxFit.cover,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
         ),
-        title: SvgPicture.asset(
-          'assets/icons/logo.svg',
-          fit: BoxFit.cover,
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: myReviews.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0,),
-                  child: Column (
-                    children: [
-                      
-                      Divider(),
-
-                      Row(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: myReviews.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: EdgeInsets.only(
+                        left: 10.0,
+                        right: 10.0,
+                      ),
+                      child: Column(
                         children: [
-                        Text(
-                        'parking_${myReviews[index]['parking_id']}',
-                        style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        ),
-                       ),
-
-
-                        const Spacer(),
-
-                        Text('${myReviews[index]['number_of_stars']}',
-                        style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        )
-                        ),
-
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.star, color: Colors.yellow),
-                       )
+                          Divider(),
+                          Row(
+                            children: [
+                              Text(
+                                'parking_${myReviews[index]['parking_id']}',
+                                style: TextStyle(
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text('${myReviews[index]['number_of_stars']}',
+                                  style: TextStyle(
+                                    fontFamily: "Inter",
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                  )),
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.star, color: Colors.yellow),
+                              )
+                            ],
+                          ),
+                          Text(
+                            '${myReviews[index]['review_text']}',
+                            style: TextStyle(
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
                         ],
-                        ),
-
-                        Text(
-                        '${myReviews[index]['review_text']}',
-                        style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        ),
-                       ),
-                    ],
-                    )
-                  );
-              },
+                      ));
+                },
+              ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              label: 'Profile',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_outline),
+              label: 'Favorites',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              label: 'Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_car_outlined),
+              label: 'Parked Cars',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.more_horiz),
+              label: 'More',
+            ),
+          ],
+          currentIndex: _selectedIndex,
 
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_outline),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map_outlined),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.directions_car_outlined),
-            label: 'Parked Cars',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
-            label: 'More',
-            
-          ),
-        ],
-        currentIndex: _selectedIndex,
+      
+          selectedItemColor: Colors.purple,
 
-        // We are not in a page listed on the navigation bar,
-        // so all items must remain grey
-        selectedItemColor: Color.fromRGBO(128,126,128, 1),
-
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-    )
-    );
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+        ));
   }
 }
