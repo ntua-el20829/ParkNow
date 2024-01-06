@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:park_now/global_server_config.dart';
 
 class MyReviews extends StatefulWidget {
   const MyReviews({super.key});
@@ -68,7 +69,7 @@ class _MyReviewsState extends State<MyReviews> {
 
     try {
       var response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/my_reviews'),
+        Uri.parse('http://${server}:${port}/my_reviews'),
         headers: {"Authorization": "Bearer $token"},
       );
 

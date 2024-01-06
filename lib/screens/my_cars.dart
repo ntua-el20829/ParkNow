@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:park_now/global_server_config.dart';
 
 class MyCarsScreen extends StatefulWidget {
   const MyCarsScreen({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/my_cars'),
+        Uri.parse('http://${server}:${port}/my_cars'),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -57,7 +58,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:5000/my_cars'), // Your API endpoint
+        Uri.parse('http://${server}:${port}/my_cars'), // Your API endpoint
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token"
@@ -85,7 +86,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
     try {
       final response = await http.delete(
-        Uri.parse('http://10.0.2.2:5000/my_cars'),
+        Uri.parse('http://${server}:${port}/my_cars'),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token"

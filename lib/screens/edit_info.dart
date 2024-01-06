@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
+import 'package:park_now/global_server_config.dart';
 
 class EditInfoScreen extends StatefulWidget {
   const EditInfoScreen({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
     }
 
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:5000/edit_info'),
+      Uri.parse('http://${server}:${port}/edit_info'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token"
