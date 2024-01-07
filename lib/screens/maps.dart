@@ -178,11 +178,9 @@ class _MapsState extends State<Maps> {
                           return ListTile(
                             title: Text(
                                 nearestParkings[index]['name'] ?? 'Unknown'),
-                            subtitle: Text(
-                                'Spots left: ${nearestParkings[index]['available_spots'] ?? '...'}'),
                             onTap: () {
                               Navigator.of(context).pushNamed('/parking_page',
-                                  arguments: nearestParkings[index]['id']);
+                                  arguments: nearestParkings[index]['_id']);
                             },
                           );
                         },
