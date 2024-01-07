@@ -10,12 +10,12 @@ import 'package:park_now/screens/make_reservation.dart';
 import 'package:park_now/screens/maps.dart';
 import 'package:park_now/screens/more.dart';
 import 'package:park_now/screens/my_cars.dart';
+import 'package:park_now/screens/my_history.dart';
 import 'package:park_now/screens/my_reviews.dart';
 import 'package:park_now/screens/parked_cars.dart';
 import 'package:park_now/screens/parking_page.dart';
 import 'package:park_now/screens/profile.dart';
 import 'package:park_now/screens/sign_up.dart';
-
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -79,17 +79,25 @@ class RouteGenerator {
         }
 
       case '/make_reservation':
-          final argument = settings.arguments as ReservationPage;
-          return MaterialPageRoute(
-            builder: (_) => ReservationPage(parkingId: argument.parkingId, initialValue: argument.initialValue,),
-            );
+        final argument = settings.arguments as ReservationPage;
+        return MaterialPageRoute(
+          builder: (_) => ReservationPage(
+            parkingId: argument.parkingId,
+            initialValue: argument.initialValue,
+          ),
+        );
 
       case '/camera':
         final argument = settings.arguments as CameraScreenWidget;
-          return MaterialPageRoute(
-            builder: (_) => CameraScreenWidget(camera: argument.camera, parkingId: argument.parkingId,),
-            );
+        return MaterialPageRoute(
+          builder: (_) => CameraScreenWidget(
+            camera: argument.camera,
+            parkingId: argument.parkingId,
+          ),
+        );
 
+      case '/my_history':
+        return MaterialPageRoute(builder: (_) => ParkingHistoryPage());
     }
 
     // In any other case throw an error
