@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:park_now/global_server_config.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,7 +21,7 @@ class _LoginState extends State<Login> {
 
   void loginUser(String email, String password) async {
     var url = Uri.parse(
-        'http://10.0.2.2:5000/login'); // Replace with your API endpoint
+        'http://${server}:${port}/login'); // Replace with your API endpoint
     var response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},

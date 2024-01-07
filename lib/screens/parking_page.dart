@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:park_now/global_server_config.dart';
+import 'package:park_now/screens/make_reservation.dart';
 
 class ParkingPage extends StatefulWidget {
   final int parkingId;
@@ -32,7 +34,7 @@ class _ParkingPageState extends State<ParkingPage> {
     });
     String? token = await storage.read(key: "jwt");
     var response = await http.get(
-      Uri.parse('http://10.0.2.2:5000/parking/${widget.parkingId}'),
+      Uri.parse('http://${server}:${port}/parking/${widget.parkingId}'),
       headers: {"Authorization": "Bearer $token"},
     );
 
@@ -66,7 +68,7 @@ class _ParkingPageState extends State<ParkingPage> {
     var body = json.encode({'parking_id': widget.parkingId});
 
     var response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/add_to_favourites'),
+      Uri.parse('http://${server}:${port}/add_to_favourites'),
       headers: headers,
       body: body,
     );
@@ -164,6 +166,31 @@ class _ParkingPageState extends State<ParkingPage> {
                   child: Text('Fee: ${parkingDetails['fee'] ?? '...'}',
                       style: TextStyle(fontSize: 16)),
                 ),
+
+              Padding(
+              padding: const EdgeInsets.only(
+                  top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
+                  elevation: 0,
+                  minimumSize: const Size(100, 55),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/make_reservation',
+                    arguments: ReservationPage(parkingId: widget.parkingId, initialValue: 'none')
+                    );
+                },
+                child: const Text("Park Now",
+                    style: TextStyle(
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w400,
+                      fontSize: 24,
+                      color: Colors.white,
+                    )),
+              ),
+            ),
 
                 // Add Review Button
                 Padding(

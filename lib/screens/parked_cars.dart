@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:park_now/global_server_config.dart';
 
 class ParkedCarsScreen extends StatefulWidget {
   const ParkedCarsScreen({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class _ParkedCarsScreenState extends State<ParkedCarsScreen> {
     }
 
     var response = await http.get(
-      Uri.parse('http://10.0.2.2:5000/my_parked_cars'),
+      Uri.parse('http://${server}:${port}/my_parked_cars'),
       headers: {"Authorization": "Bearer $token"},
     );
 

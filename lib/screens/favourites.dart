@@ -4,6 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:park_now/global_server_config.dart';
+
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({Key? key}) : super(key: key);
 
@@ -41,7 +43,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
     try {
       var response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/favourites'),
+        Uri.parse('http://${server}:${port}/favourites'),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -67,7 +69,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
     try {
       var response = await http.delete(
-        Uri.parse('http://10.0.2.2:5000/favourites'),
+        Uri.parse('http://${server}:${port}/favourites'),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
