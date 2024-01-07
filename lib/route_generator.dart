@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:park_now/screens/add_review.dart';
+import 'package:park_now/screens/camera.dart';
 import 'package:park_now/screens/edit_info.dart';
 import 'package:park_now/screens/error_page.dart';
 import 'package:park_now/screens/favourites.dart';
 import 'package:park_now/screens/launch_page.dart';
 import 'package:park_now/screens/login.dart';
+import 'package:park_now/screens/make_reservation.dart';
 import 'package:park_now/screens/maps.dart';
 import 'package:park_now/screens/more.dart';
 import 'package:park_now/screens/my_cars.dart';
@@ -13,6 +15,7 @@ import 'package:park_now/screens/parked_cars.dart';
 import 'package:park_now/screens/parking_page.dart';
 import 'package:park_now/screens/profile.dart';
 import 'package:park_now/screens/sign_up.dart';
+
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -70,6 +73,19 @@ class RouteGenerator {
             builder: (_) => AddReview(parkingId: args,),
             );
         }
+
+      case '/make_reservation':
+          final argument = settings.arguments as ReservationPage;
+          return MaterialPageRoute(
+            builder: (_) => ReservationPage(parkingId: argument.parkingId, initialValue: argument.initialValue,),
+            );
+
+      case '/camera':
+        final argument = settings.arguments as CameraScreenWidget;
+          return MaterialPageRoute(
+            builder: (_) => CameraScreenWidget(camera: argument.camera, parkingId: argument.parkingId,),
+            );
+
     }
 
     // In any other case throw an error
