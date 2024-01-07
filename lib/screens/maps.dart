@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 class Maps extends StatefulWidget {
   const Maps({Key? key}) : super(key: key);
@@ -12,24 +15,24 @@ class Maps extends StatefulWidget {
 
 class _MapsState extends State<Maps> {
   int? userId;
-
   final storage = FlutterSecureStorage();
   int _selectedIndex = 2;
+  bool isLoading = true;
+  List<dynamic> nearestParkings = [];
 
   @override
   void initState() {
     super.initState();
-    _loadUserId(); // Load the user ID when the widget is initialized
+    _loadUserId();
+    _loadNearestParkings(); // Load nearest parkings when the widget is initialized
   }
 
   void _loadUserId() async {
-    String? token =
-        await storage.read(key: "jwt"); // Read the JWT from secure storage
+    String? token = await storage.read(key: "jwt");
     if (token != null && token.isNotEmpty) {
-      Map<String, dynamic> decodedToken = Jwt.parseJwt(token); // Decode the JWT
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
       setState(() {
-        userId = int.tryParse(decodedToken['sub']
-            .toString()); // Extract the user ID and ensure it's an integer
+        userId = int.tryParse(decodedToken['sub'].toString());
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,22 +41,100 @@ class _MapsState extends State<Maps> {
     }
   }
 
+  Future<void> _loadNearestParkings() async {
+    setState(() {
+      isLoading = true;
+    });
+    String? token = await storage.read(key: "jwt");
+    if (token == null || token.isEmpty) {
+      _showSnackBar('Authentication token not found.');
+      return;
+    }
+
+    try {
+      // Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _showSnackBar('Location services are disabled.');
+        return;
+      }
+
+      // Request permission to access location
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          _showSnackBar('Location permissions are denied');
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        _showSnackBar(
+            'Location permissions are permanently denied, we cannot request permissions.');
+        return;
+      }
+
+      // Get the current position
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      var response = await http.post(
+        Uri.parse('http://10.0.2.2:5000/nearest_parkings'),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(
+            {'latitude': position.latitude, 'longitude': position.longitude}),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          nearestParkings = json.decode(response.body)['nearest_parkings'];
+          isLoading = false;
+        });
+      } else {
+        _showSnackBar('Failed to load nearest parkings.');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      _showSnackBar('Failed to get current location: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showSnackBar(String content) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(content)));
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
     // Implement navigation logic depending on the index
-    // For example:
-    if (index == 0) {
-      Navigator.of(context).pushReplacementNamed('/profile');
-    } else if (index == 1) {
-      Navigator.of(context).pushReplacementNamed('/favourites');
-    } else if (index == 2) {
-      // do nothing
-    } else if (index == 3) {
-      Navigator.of(context).pushReplacementNamed('/parked_cars');
-    } else if (index == 4) {
-      Navigator.of(context).pushReplacementNamed('/more');
+    // Example navigation logic (you will need to update this with actual routes)
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushReplacementNamed('/profile');
+        break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed('/favourites');
+        break;
+      case 2:
+        // do nothing
+        break;
+      case 3:
+        Navigator.of(context).pushReplacementNamed('/parked_cars');
+        break;
+      case 4:
+        Navigator.of(context).pushReplacementNamed('/more');
+        break;
     }
   }
 
@@ -68,53 +149,48 @@ class _MapsState extends State<Maps> {
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: userId != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/map_icon.svg', // Replace with your map icon asset
-                    width: 100,
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Welcome to Maps!',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'User ID: $userId',
-                    style: TextStyle(fontSize: 20),
-                  ),
-
-              // for debugging reasons 
-              Padding(
-              padding:
-                  const EdgeInsets.only(top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
-                  elevation: 0,
-                  minimumSize: const Size(100, 55),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/parking_page', arguments: 1);
-                },
-                child: const Text("Parking 0",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                      color: Colors.white,
-                    )),
-              ),
-            ),
-            // end
-                ],
-              )
-            : CircularProgressIndicator(), // Show a loading indicator while waiting
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : userId != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/map_icon.svg',
+                      width: 100,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Welcome to Maps!',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Nearest Parkings:',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: nearestParkings.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                                nearestParkings[index]['name'] ?? 'Unknown'),
+                            subtitle: Text(
+                                'Spots left: ${nearestParkings[index]['available_spots'] ?? '...'}'),
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/parking_page',
+                                  arguments: nearestParkings[index]['id']);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                )
+              : const CircularProgressIndicator(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

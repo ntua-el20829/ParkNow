@@ -10,14 +10,16 @@ from flask import Flask, jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
+from pymongo import MongoClient
 import json
 
 
 app = Flask(__name__)
 CORS(app) 
 bcrypt = Bcrypt(app)
-app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Change this to a random secret key
+app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key' 
 jwt = JWTManager(app)
+
 
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
@@ -443,6 +445,7 @@ def my_parked_cars():
         # Log the error for debugging
         print(str(e))
         return jsonify({'message': 'Failed to retrieve parked cars', 'error': str(e)}), 500
+
     
 
 
@@ -505,7 +508,54 @@ def add_to_favourites():
         return jsonify({'message': 'Failed to add to favourites', 'error': str(e)}), 500
 
 
+
+@app.route('/nearest_parkings', methods=['POST'])
+@jwt_required()
+def nearest_parkings():
+    # Extract the coordinates from the request
+    client = MongoClient()
+    db = client['park_now']
+    collection = db['parkings']
+    data = request.get_json()
+    lat = data.get('latitude')
+    lng = data.get('longitude')
+     
+    if not lat or not lng:
+        return jsonify({"message": "Missing latitude or longitude"}), 400
+
+    coordinates = [lng, lat]  # Ensure coordinates are in [longitude, latitude] order
+    print(coordinates)
+    try:
+        # Query for nearest parkings
+        nearest_parkings = collection.find(
+            {
+                "coordinates": {
+                    "$near": {
+                        "$geometry": {
+                            "type": "Point",
+                            "coordinates": coordinates
+                        },
+                        "$maxDistance": 5000  # Adjust the max distance as needed
+                    }
+                }
+            }
+        ).limit(10)  # Adjust the limit as needed
+
+        # Convert the query result to a list of dictionaries
+        parkings_list = list(nearest_parkings)
+        print(parkings_list)
+        # Close the cursor
+        nearest_parkings.close()
+
+        return jsonify({"nearest_parkings": parkings_list}), 200
+
+    except Exception as e:
+        print(str(e))
+        return jsonify({'message': 'Failed to retrieve nearest parkings', 'error': str(e)}), 500
+    
+
 session.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

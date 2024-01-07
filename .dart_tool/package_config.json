@@ -86,6 +86,42 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/Desktop/tools/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "geolocator",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/geolocator-7.7.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator_android",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/geolocator_android-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator_apple",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/geolocator_apple-1.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator_platform_interface",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/geolocator_platform_interface-2.3.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "geolocator_web",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/geolocator_web-2.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "http",
       "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/http-0.13.6",
       "packageUri": "lib/",
@@ -144,6 +180,12 @@
       "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/petitparser-5.4.0",
       "packageUri": "lib/",
       "languageVersion": "2.19"
+    },
+    {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///Users/stefanosgiannakopoulos/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "sky_engine",
@@ -236,7 +278,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-01-04T23:03:46.363665Z",
+  "generated": "2024-01-07T17:54:48.138707Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }
