@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:park_now/global_server_config.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -17,7 +18,7 @@ class _SignUpState extends State<SignUp> {
   var email = TextEditingController();
   var phone_number = TextEditingController();
   String _baseUrl =
-      "http://10.0.2.2:5000/signup"; // Change this to your actual server IP and port
+      "http://${server}:${port}/signup";
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {

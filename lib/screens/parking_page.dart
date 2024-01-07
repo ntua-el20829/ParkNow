@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:park_now/global_server_config.dart';
 import 'package:park_now/screens/make_reservation.dart';
 
 class ParkingPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _ParkingPageState extends State<ParkingPage> {
     });
     String? token = await storage.read(key: "jwt");
     var response = await http.get(
-      Uri.parse('http://10.0.2.2:5000/parking/${widget.parkingId}'),
+      Uri.parse('http://${server}:${port}/parking/${widget.parkingId}'),
       headers: {"Authorization": "Bearer $token"},
     );
 
@@ -67,7 +68,7 @@ class _ParkingPageState extends State<ParkingPage> {
     var body = json.encode({'parking_id': widget.parkingId});
 
     var response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/add_to_favourites'),
+      Uri.parse('http://${server}:${port}/add_to_favourites'),
       headers: headers,
       body: body,
     );

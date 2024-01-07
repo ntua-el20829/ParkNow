@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:park_now/global_server_config.dart';
+
 class AddReview extends StatefulWidget {
   final int parkingId;
   const AddReview({Key? key, required this.parkingId}) : super(key: key);
@@ -26,7 +28,7 @@ class _AddReviewState extends State<AddReview> {
 
     var response = await http.post(
       Uri.parse(
-          'http://10.0.2.2:5000/my_reviews'), // Replace with your actual domain
+          'http://${server}:${port}/my_reviews'), // Replace with your actual domain
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",

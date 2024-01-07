@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:park_now/global_server_config.dart';
 
 class Maps extends StatefulWidget {
   const Maps({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _MapsState extends State<Maps> {
           desiredAccuracy: LocationAccuracy.high);
 
       var response = await http.post(
-        Uri.parse('http://10.0.2.2:5000/nearest_parkings'),
+        Uri.parse('http://${server}:${port}/nearest_parkings'),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json"

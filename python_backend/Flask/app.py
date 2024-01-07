@@ -7,7 +7,7 @@ from datetime import timedelta
 from flask_jwt_extended import jwt_required, get_jwt_identity,create_access_token
 from sqlalchemy.exc import IntegrityError,SQLAlchemyError
 from flask import Flask, jsonify, request
-from flask_bcrypt import Bcrypt
+from datetime import datetime, timedelta
 from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -211,7 +211,6 @@ def my_cars():
                 return jsonify({'message': 'Failed to delete vehicle'}), 500
         else:
             return jsonify({'message': 'Vehicle not found or not owned by user'}), 404
-
 
 
 
@@ -554,8 +553,64 @@ def nearest_parkings():
         return jsonify({'message': 'Failed to retrieve nearest parkings', 'error': str(e)}), 500
     
 
+@app.route('/reserve', methods=['POST'])
+@jwt_required()
+def reserve_parking():
+    current_user = get_jwt_identity()
+    user_id = current_user
+    data = request.get_json()
+    parking_id = data.get('parking_id')
+    license_plate = data.get('license_plate')
+    hours = data.get('hours')  # The number of hours to reserve
+
+    if not parking_id or not license_plate or not hours:
+        return jsonify({'message': 'Missing required data'}), 400
+
+    # Start a transaction
+    try:
+        # Use the session to begin a transaction
+        session.begin()
+
+        # Check if the parking spot is available
+        parking = session.query(Parking).filter_by(id=parking_id).with_for_update().first()
+        if not parking or parking.number_of_spots_left <= 0:
+            session.rollback()  # Rollback the transaction
+            return jsonify({'message': 'Parking not available or full'}), 404
+
+        # Calculate estimated departure time
+        time_of_arrival = datetime.now()
+        estimated_departure_time = time_of_arrival + timedelta(hours=hours)
+
+        # Create a new reservation record
+        new_reservation = Reservation(
+            user_id=user_id,
+            parking_id=parking_id,
+            license_plate=license_plate,
+            time_of_arrival=time_of_arrival,
+            estimated_departure_time=estimated_departure_time,
+            total_fee=parking.fee * hours,
+            is_valid=True
+        )
+        
+        session.add(new_reservation)
+
+        # Update the number of spots left in the parking
+        parking.number_of_spots_left -= 1
+
+        # Commit the transaction
+        session.commit()
+
+        return jsonify({'message': 'Parking reserved successfully'}), 201
+
+    except SQLAlchemyError as e:
+        # Rollback the transaction in case of any error
+        session.rollback()
+        print(str(e))
+        return jsonify({'message': 'Failed to reserve parking', 'error': str(e)}), 500
+
+
 session.close()
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

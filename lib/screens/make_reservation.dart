@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:park_now/global_server_config.dart';
 import 'dart:convert';
 import 'package:park_now/main.dart';
 import 'package:park_now/screens/camera.dart';
@@ -105,7 +106,7 @@ class _ReservationPageState extends State<ReservationPage> {
  
       // Make reservation request
       var response = await http.post(
-        Uri.parse('http://10.0.2.2:5000/reserve'),
+        Uri.parse('http://${server}:${port}/reserve'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
