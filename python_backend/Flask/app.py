@@ -12,7 +12,7 @@ from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
 from pymongo import MongoClient
 import json
-
+import threading
 
 app = Flask(__name__)
 CORS(app) 
@@ -456,20 +456,32 @@ def get_parking_details(parking_id):
 
     try:
         parking = session.query(Parking).get(parking_id)
-        
+      
         if parking:
             isFavorite = False
             existing_favourite = session.query(Favourite).filter_by(user_id=user_id, parking_id=parking_id).first()
             if existing_favourite:
                 isFavorite = True
                 
+           
+            reviews = session.query(Review).filter_by(parking_id=parking_id).all()
+            reviews_list = []
+            for review in reviews:
+                reviews_list.append({
+                    'review_id': review.id,
+                    'review_text': review.review,
+                    'number_of_stars': review.number_of_stars,
+                    'user_id': review.user_id
+                })
+
             parking_details = {
                 'id': parking.id,
                 'name': parking.name,
                 'total_spots': parking.capacity,
                 'available_spots': parking.number_of_spots_left,
                 'fee': parking.fee,
-                'isFavorite': isFavorite
+                'isFavorite': isFavorite,
+                'reviews': reviews_list  # Include reviews in the response
             }
 
             return jsonify({
@@ -481,6 +493,7 @@ def get_parking_details(parking_id):
     except Exception as e:
         print(str(e))
         return jsonify({'message': 'Failed to retrieve parking details', 'error': str(e)}), 500
+
    
 
 @app.route('/add_to_favourites', methods=['POST'])
@@ -553,6 +566,8 @@ def nearest_parkings():
         return jsonify({'message': 'Failed to retrieve nearest parkings', 'error': str(e)}), 500
     
 
+
+
 @app.route('/reserve', methods=['POST'])
 @jwt_required()
 def reserve_parking():
@@ -561,7 +576,7 @@ def reserve_parking():
     data = request.get_json()
     parking_id = data.get('parking_id')
     license_plate = data.get('license_plate')
-    hours = data.get('hours')  # The number of hours to reserve
+    hours = data.get('hours') 
 
     if not parking_id or not license_plate or not hours:
         return jsonify({'message': 'Missing required data'}), 400

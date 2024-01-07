@@ -58,8 +58,10 @@ class RouteGenerator {
         // as an argument. Check whether the argument is an integer
         if (args is int) {
           return MaterialPageRoute(
-            builder: (_) => ParkingPage(parkingId: args,),
-            );
+            builder: (_) => ParkingPage(
+              parkingId: args,
+            ),
+          );
         }
 
       case '/reviews':
@@ -70,8 +72,10 @@ class RouteGenerator {
         // as an argument. Check whether the argument is an integer
         if (args is int) {
           return MaterialPageRoute(
-            builder: (_) => AddReview(parkingId: args,),
-            );
+            builder: (_) => AddReview(
+              parkingId: args,
+            ),
+          );
         }
 
       case '/make_reservation':
