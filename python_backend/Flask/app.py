@@ -575,15 +575,25 @@ def reserve_parking():
     parking_id = data.get('parking_id')
     license_plate = data.get('license_plate')
     hours = data.get('hours') 
-
+    
     if not parking_id or not license_plate or not hours:
         return jsonify({'message': 'Missing required data'}), 400
 
+    
     # Start a transaction
     try:
         # Use the session to begin a transaction
         session.begin()
+        
+        existing_reservation = session.query(Reservation).filter(
+            Reservation.user_id == user_id,
+            Reservation.parking_id == parking_id,
+            Reservation.is_valid == True
+        ).first()
 
+        if existing_reservation:
+            session.rollback()  # Rollback the transaction
+            return jsonify({'message': 'You already have a valid reservation at this parking'}), 403
         # Check if the parking spot is available
         parking = session.query(Parking).filter_by(id=parking_id).with_for_update().first()
         if not parking or parking.number_of_spots_left <= 0:
@@ -609,7 +619,7 @@ def reserve_parking():
 
         # Update the number of spots left in the parking
         parking.number_of_spots_left -= 1
-
+         
         # Commit the transaction
         session.commit()
 
