@@ -20,6 +20,7 @@ class _ParkingPageState extends State<ParkingPage> {
   bool isLoading = true;
   bool isFavorite = false;
   Map<String, dynamic> parkingDetails = {};
+  List<dynamic> reviews = [];
   int _selectedIndex = 2;
 
   @override
@@ -42,6 +43,7 @@ class _ParkingPageState extends State<ParkingPage> {
       var data = json.decode(response.body);
       setState(() {
         parkingDetails = data['parking'];
+        reviews = parkingDetails['reviews'] ?? [];
         isFavorite = parkingDetails['isFavorite'] ?? false;
         isLoading = false;
       });
@@ -118,9 +120,7 @@ class _ParkingPageState extends State<ParkingPage> {
         toolbarHeight: 140,
         leading: IconButton(
           icon: Image.asset('assets/images/back_arrow.png'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: SvgPicture.asset(
           'assets/icons/logo.svg',
@@ -133,7 +133,6 @@ class _ParkingPageState extends State<ParkingPage> {
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               children: [
-                // Parking Name
                 Container(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
@@ -147,14 +146,10 @@ class _ParkingPageState extends State<ParkingPage> {
                   )),
                   color: const Color.fromRGBO(153, 140, 230, 1),
                 ),
-
-                // Add/Remove from favourites
                 ListTile(
                   title: const Text('Add to favourites'),
                   onTap: toggleFavorite,
                 ),
-
-                // Display actual values fetched from the backend
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -166,7 +161,17 @@ class _ParkingPageState extends State<ParkingPage> {
                   child: Text('Fee: ${parkingDetails['fee'] ?? '...'}',
                       style: TextStyle(fontSize: 16)),
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/add_review',
+                          arguments: widget.parkingId);
+                    },
+                    child: const Text('Add Review'),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
@@ -191,19 +196,18 @@ class _ParkingPageState extends State<ParkingPage> {
                         )),
                   ),
                 ),
-
-                // Add Review Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to the Add Review page
-                      Navigator.of(context).pushNamed('/add_review',
-                          arguments: widget.parkingId);
-                    },
-                    child: const Text('Add Review'),
-                  ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) {
+                    var reviewItem = reviews[index];
+                    return ListTile(
+                      title: Text(
+                          'Rating: ${reviewItem['number_of_stars']} Stars'),
+                      subtitle: Text('${reviewItem['review_text']}'),
+                    );
+                  },
                 ),
               ],
             ),
