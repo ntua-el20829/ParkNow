@@ -544,7 +544,7 @@ def nearest_parkings():
         # Convert the query result to a list of dictionaries
         parkings_list = list(nearest_parkings)
         print(parkings_list)
-        # Close the cursor
+       
         nearest_parkings.close()
 
         return jsonify({"nearest_parkings": parkings_list}), 200
