@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:park_now/screens/make_reservation.dart';
 
-
 class CameraScreenWidget extends StatefulWidget {
   const CameraScreenWidget({
     super.key,
     required this.camera,
     required this.parkingId,
-    });
+  });
 
   final CameraDescription camera;
   final int parkingId;
@@ -20,12 +19,10 @@ class CameraScreenWidget extends StatefulWidget {
 }
 
 class _CameraScreenWidgetState extends State<CameraScreenWidget> {
-
-    void _showSnackBar(String message) {
+  void _showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-
 
   /// Δημιουργία ενός στιγμιοτύπου της κλάσης [TextRecognizer]
   final TextRecognizer _textRecognizer =
@@ -66,13 +63,10 @@ class _CameraScreenWidgetState extends State<CameraScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Take a picture')),
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: <Widget>[
           FutureBuilder<void>(
-
               future: _initializeControllerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -81,11 +75,9 @@ class _CameraScreenWidgetState extends State<CameraScreenWidget> {
                   return const Center(child: CircularProgressIndicator());
                 }
               }),
-
           Text('$_text'),
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
@@ -99,17 +91,16 @@ class _CameraScreenWidgetState extends State<CameraScreenWidget> {
               _text = recognizedText.text;
             });
 
-            Navigator.of(context).pushReplacementNamed(
-              '/make_reservation',
-              arguments: ReservationPage(parkingId: widget.parkingId, initialValue: '${_text}')
-            );
+            Navigator.of(context).pushReplacementNamed('/make_reservation',
+                arguments: ReservationPage(
+                    parkingId: widget.parkingId, initialValue: '${_text}'));
 
             if (!mounted) return;
           } catch (e) {
-            /// Σε περίπτωση σφάλματος τύπωσε το σφάλμα 
-            _showSnackBar('An error occured');    
+            /// Σε περίπτωση σφάλματος τύπωσε το σφάλμα
+            _showSnackBar('An error occured');
           }
-        },       
+        },
         child: const Icon(Icons.camera_alt),
       ),
     );

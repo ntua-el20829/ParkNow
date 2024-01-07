@@ -566,8 +566,6 @@ def nearest_parkings():
         return jsonify({'message': 'Failed to retrieve nearest parkings', 'error': str(e)}), 500
     
 
-
-
 @app.route('/reserve', methods=['POST'])
 @jwt_required()
 def reserve_parking():
