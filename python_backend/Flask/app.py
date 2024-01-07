@@ -445,6 +445,42 @@ def my_parked_cars():
         return jsonify({'message': 'Failed to retrieve parked cars', 'error': str(e)}), 500
     
 
+
+@app.route('/parking/<int:parking_id>', methods=['GET'])
+@jwt_required()
+def get_parking_details(parking_id):
+    current_user = get_jwt_identity()  
+    user_id = current_user
+
+    try:
+        parking = session.query(Parking).get(parking_id)
+        
+        if parking:
+            isFavorite = False
+            existing_favourite = session.query(Favourite).filter_by(user_id=user_id, parking_id=parking_id).first()
+            if existing_favourite:
+                isFavorite = True
+                
+            parking_details = {
+                'id': parking.id,
+                'name': parking.name,
+                'total_spots': parking.capacity,
+                'available_spots': parking.number_of_spots_left,
+                'fee': parking.fee,
+                'isFavorite': isFavorite
+            }
+
+            return jsonify({
+                'message': 'Successfully retrieved parking details',
+                'parking': parking_details
+            }), 200
+        else:
+            return jsonify({'message': 'Parking not found'}), 404
+    except Exception as e:
+        print(str(e))
+        return jsonify({'message': 'Failed to retrieve parking details', 'error': str(e)}), 500
+   
+
 @app.route('/add_to_favourites', methods=['POST'])
 @jwt_required()
 def add_to_favourites():
@@ -467,36 +503,6 @@ def add_to_favourites():
         session.rollback()
         print(str(e))
         return jsonify({'message': 'Failed to add to favourites', 'error': str(e)}), 500
-
-
-@app.route('/parking/<int:parking_id>', methods=['GET'])
-@jwt_required()
-def get_parking_details(parking_id):
-    current_user = get_jwt_identity()  
-    user_id = current_user
-
-    try:
-        parking = session.query(Parking).get(parking_id)
-        
-        if parking:
-            parking_details = {
-                'id': parking.id,
-                'name': parking.name,
-                'total_spots': parking.total_spots,
-                'available_spots': parking.available_spots,
-                
-            }
-
-            return jsonify({
-                'message': 'Successfully retrieved parking details',
-                'parking': parking_details
-            }), 200
-        else:
-            return jsonify({'message': 'Parking not found'}), 404
-    except Exception as e:
-        print(str(e))
-        return jsonify({'message': 'Failed to retrieve parking details', 'error': str(e)}), 500
-   
 
 
 session.close()
