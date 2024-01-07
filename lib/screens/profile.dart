@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             title: Text('History'),
             onTap: () {
-              //  Navigator.of(context).pushReplacementNamed('/history');
+              Navigator.of(context).pushReplacementNamed('/my_history');
             },
           ),
           ListTile(

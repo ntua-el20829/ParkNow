@@ -167,30 +167,30 @@ class _ParkingPageState extends State<ParkingPage> {
                       style: TextStyle(fontSize: 16)),
                 ),
 
-              Padding(
-              padding: const EdgeInsets.only(
-                  top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
-                  elevation: 0,
-                  minimumSize: const Size(100, 55),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
+                      elevation: 0,
+                      minimumSize: const Size(100, 55),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/make_reservation',
+                          arguments: ReservationPage(
+                              parkingId: widget.parkingId,
+                              initialValue: 'none'));
+                    },
+                    child: const Text("Park Now",
+                        style: TextStyle(
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24,
+                          color: Colors.white,
+                        )),
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/make_reservation',
-                    arguments: ReservationPage(parkingId: widget.parkingId, initialValue: 'none')
-                    );
-                },
-                child: const Text("Park Now",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                      color: Colors.white,
-                    )),
-              ),
-            ),
 
                 // Add Review Button
                 Padding(
