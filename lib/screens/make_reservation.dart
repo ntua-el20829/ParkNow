@@ -11,6 +11,7 @@ import 'package:park_now/screens/camera.dart';
 class ReservationPage extends StatefulWidget {
   final int parkingId;
   final String initialValue;
+
   const ReservationPage(
       {Key? key, required this.parkingId, required this.initialValue})
       : super(key: key);
@@ -26,7 +27,7 @@ class _ReservationPageState extends State<ReservationPage> {
   int selectedHours = 1; // Default to 1 hour
   double totalPayment = 5.0; // Default payment for 1 hour
   var licensePlate = TextEditingController();
-
+  double parkingFeePerHour = 0.0;
   // We are not in a page listed on the navigation bar.
   // Nevertheless, _selectIndex must be initialised.
   // Assign _selectedIndex to 0
@@ -39,7 +40,7 @@ class _ReservationPageState extends State<ReservationPage> {
     if (widget.initialValue != 'none') {
       licensePlate.text = widget.initialValue;
     }
-
+    fetchParkingDetails();
     // Αρχικοποίηση του ελεγκτή κάμερας [CameraController] για σύνδεση με την
     // πρώτη κάμερα.
     controller = CameraController(
@@ -97,41 +98,55 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
+  Future<void> fetchParkingDetails() async {
+    String? token = await storage.read(key: "jwt");
+    var response = await http.get(
+      Uri.parse('http://${server}:${port}/parking/${widget.parkingId}'),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      setState(() {
+        parkingFeePerHour =
+            data['parking']['fee']; // Get the fee per hour from the response
+        totalPayment = parkingFeePerHour *
+            selectedHours; // Update total payment based on the fee and selected hours
+      });
+    } else {
+      _showSnackBar('Failed to load parking details.');
+    }
+  }
+
+  // Existing Widget _buildSelectTimeButton()...
+
   Future<void> _makeReservation() async {
-    // Validate input fields
     if (_formKey.currentState!.validate()) {
-      try {
-        // Fetch authentication token
-        String? token = await storage.read(key: "jwt");
-        if (token == null) {
-          _showSnackBar('No authentication token found.');
-          return;
-        }
+      String? token = await storage.read(key: "jwt");
+      if (token == null) {
+        _showSnackBar('No authentication token found.');
+        return;
+      }
 
-        // Make reservation request
-        var response = await http.post(
-          Uri.parse('http://${server}:${port}/reserve'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'license_plate': licensePlate,
-            'time_of_departure': DateTime.now()
-                .add(Duration(hours: selectedHours)) // Corrected line
-                .toIso8601String(),
-            'parking_id': widget.parkingId,
-          }),
-        );
+      var response = await http.post(
+        Uri.parse('http://${server}:${port}/reserve'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'parking_id': widget.parkingId,
+          'license_plate': licensePlate.text,
+          'hours': selectedHours,
+        }),
+      );
 
-        if (response.statusCode == 200) {
-          _showSnackBar('Reservation made successfully.');
-          // Optionally, you can navigate to another page after a successful reservation
-        } else {
-          _showSnackBar('Failed to make a reservation.');
-        }
-      } catch (e) {
-        _showSnackBar('An error occurred while making a reservation.');
+      if (response.statusCode == 201) {
+        _showSnackBar(
+            'Reservation made successfully. Total fee: \$${totalPayment.toStringAsFixed(2)}');
+      } else {
+        var data = json.decode(response.body);
+        _showSnackBar('Failed to reserve parking: ${data['message']}');
       }
     }
   }
