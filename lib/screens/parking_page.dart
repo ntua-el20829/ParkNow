@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ParkingPage extends StatefulWidget {
-  const ParkingPage({super.key, required this.parkingId});
-
   final int parkingId;
+
+  const ParkingPage({Key? key, required this.parkingId}) : super(key: key);
 
   @override
   State<ParkingPage> createState() => _ParkingPageState();
@@ -16,167 +15,129 @@ class ParkingPage extends StatefulWidget {
 class _ParkingPageState extends State<ParkingPage> {
   final storage = FlutterSecureStorage();
   bool isLoading = true;
-  List<dynamic> favouriteParkings = [];
+  bool isFavorite = false;
+  Map<String, dynamic> parkingDetails = {};
+  int _selectedIndex = 2;
+  @override
+  void initState() {
+    super.initState();
+    fetchParkingDetails();
+  }
 
-  // We are not in a page listed on the navigation bar.
-  // Nevertheless, _selectIndex must be initialised.
-  // Assign _selectedIndex to 0
-  int _selectedIndex = 0;
+  Future<void> fetchParkingDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+    String? token = await storage.read(key: "jwt");
+    var response = await http.get(
+      Uri.parse('http://10.0.2.2:5000/parking/${widget.parkingId}'),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      setState(() {
+        parkingDetails = data['parking'];
+        isFavorite = parkingDetails['isFavorite'];
+        isLoading = false;
+      });
+    } else {
+      _showSnackBar('Failed to load parking details.');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> toggleFavorite() async {
+    String? token = await storage.read(key: "jwt");
+    var response = await http.post(
+      Uri.parse('http://10.0.2.2:5000/add_to_favourites'),
+      headers: {"Authorization": "Bearer $token"},
+      body: json.encode({'parking_id': widget.parkingId}),
+    );
+
+    if (response.statusCode == 201) {
+      fetchParkingDetails(); // Refresh parking details
+      _showSnackBar('Toggled favorite successfully.');
+    } else {
+      _showSnackBar(
+          'Failed to toggle favorite. Status Code: ${response.statusCode}');
+    }
+  }
+
+  void _showSnackBar(String content) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(content)));
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
     // Implement navigation logic depending on the index
-    switch (index) {
-      case 0:
-        Navigator.of(context).pushReplacementNamed('/profile');
-        break;
-      case 1:
-        Navigator.of(context).pushReplacementNamed('/favourites');
-        break;
-      case 2:
-        Navigator.of(context).pushReplacementNamed('/maps');
-        break;
-      case 3:
-        Navigator.of(context).pushReplacementNamed('/parked_cars');
-        break;
-      case 4:
-        Navigator.of(context).pushReplacementNamed('/more');
-        break;
+    // For example:
+    if (index == 0) {
+      Navigator.of(context).pushReplacementNamed('/profile');
+    } else if (index == 1) {
+      Navigator.of(context).pushReplacementNamed('/favourites');
+    } else if (index == 2) {
+      Navigator.of(context).pushReplacementNamed('/maps');
+    } else if (index == 3) {
+      Navigator.of(context).pushReplacementNamed('/parked_cars');
+    } else if (index == 4) {
+      // do nothing
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 102,
           leading: IconButton(
-            icon: Image.asset('assets/images/back_arrow.png'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          title: SvgPicture.asset(
-            'assets/icons/logo.svg',
-            fit: BoxFit.cover,
-          ),
+          title: const Text('Parking Details'),
           centerTitle: true,
           backgroundColor: Colors.white,
         ),
-        body: /* isLoading
-      ? Center(child: CircularProgressIndicator())
-      : */
-            ListView(
-          children: [
-            // Parking Name
-
-            Container(
-              padding: EdgeInsets.all(20.0),
-              child: Center(
-                  child: Text("Parking Name",
-                      style: TextStyle(
-                        fontFamily: "Inter",
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView(
+                children: [
+                  // Parking Name
+                  Container(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Center(
+                        child: Text(
+                      parkingDetails['name'] ?? 'Loading...',
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 32,
                         color: Colors.white,
-                      ))),
-              color: const Color.fromRGBO(153, 140, 230, 1),
-            ),
-
-            // Add/remove from favourites
-            Row(children: [
-              Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text("Add/Remove from favourites",
-                      style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                      ))),
-            ]),
-
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 25.0, bottom: 2.0),
-                child: Text("Number of spots available: 20 out of 100",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ))),
-
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 2.0, bottom: 2.0),
-                child: Text("Open 24 hours a week",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ))),
-
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 2.0, bottom: 2.0),
-                child: Text("Per hour pricing: ",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ))),
-
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 80.0, left: 80.0, right: 80.0, bottom: 50.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(153, 140, 230, 1),
-                  elevation: 0,
-                  minimumSize: const Size(100, 55),
-                ),
-                onPressed: () {},
-                child: const Text("Park Now",
-                    style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                      color: Colors.white,
+                      ),
                     )),
-              ),
-            ),
+                    color: const Color.fromRGBO(153, 140, 230, 1),
+                  ),
 
-            Row(children: [
-              Padding(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 2.0, bottom: 10.0),
-                  child: Text("Reviews",
-                      style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 20,
-                      ))),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/add_review', arguments: widget.parkingId);
-                },
-                icon: Icon(Icons.add_circle_outline_outlined),
+                  // Add/Remove from favourites
+                  ListTile(
+                    leading: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                    title: const Text('Add to favorites'),
+                    onTap: toggleFavorite,
+                  ),
+
+                  // Display actual values fetched from the backend
+                  Text(
+                      'Number of spots available: ${parkingDetails['availableSpots'] ?? '...'} out of ${parkingDetails['totalSpots'] ?? '...'}'),
+                  // ... Other widgets
+                ],
               ),
-              Padding(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 2.0, bottom: 10.0),
-                  child: Text("Add a new review",
-                      style: TextStyle(
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: const Color.fromRGBO(153, 140, 230, 1),
-                      ))),
-            ]),
-          ],
-        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -201,11 +162,7 @@ class _ParkingPageState extends State<ParkingPage> {
             ),
           ],
           currentIndex: _selectedIndex,
-
-          // We are not in a page listed on the navigation bar,
-          // so all items must remain grey
-          selectedItemColor: Color.fromRGBO(128, 126, 128, 1),
-
+          selectedItemColor: Colors.purple,
           onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
         ));
