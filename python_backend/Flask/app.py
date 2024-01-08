@@ -632,6 +632,8 @@ def reserve_parking():
         print(str(e))
         return jsonify({'message': 'Failed to reserve parking', 'error': str(e)}), 500
 
+    finally:
+        session.close()
 
 def check_reservations_and_update_spots():
     session = DBSession()

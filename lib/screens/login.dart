@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
-                      labelText: "email",
+                      labelText: "Email",
                     ),
                   ),
                 ),

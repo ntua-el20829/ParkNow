@@ -67,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
+        toolbarHeight: 140,
         leading: IconButton(
           icon: Image.asset('assets/images/back_arrow.png'),
           onPressed: () {
