@@ -13,6 +13,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 import json
 import threading
+import time
 
 app = Flask(__name__)
 CORS(app) 
@@ -632,8 +633,47 @@ def reserve_parking():
         return jsonify({'message': 'Failed to reserve parking', 'error': str(e)}), 500
 
 
-session.close()
+def check_reservations_and_update_spots():
+    session = DBSession()
+    try:
+        # Disable foreign key checks
+        session.execute(text('SET FOREIGN_KEY_CHECKS=0;'))
 
+        # Find all reservations where estimated departure time is in the past and is_valid is True and have not checked it yet ... 
+        expired_reservations = session.query(Reservation)\
+            .filter(Reservation.estimated_departure_time <= datetime.now(), Reservation.is_valid == True,Reservation.checked==False)\
+            .all()
+
+        for reservation in expired_reservations:
+            reservation.is_valid = False
+            reservation.checked = True
+            # Get the parking associated with this reservation
+            parking = session.query(Parking).filter(Parking.id == reservation.parking_id).first()
+            if parking:
+                # Increase the number of spots left
+                parking.number_of_spots_left += 1
+
+        # Commit the changes
+        session.commit()
+
+        # Re-enable foreign key checks
+        session.execute(text('SET FOREIGN_KEY_CHECKS=1;'))
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        session.rollback()
+    finally:
+        session.close()
+
+def daemon_thread():
+    while True:
+        check_reservations_and_update_spots()
+        time.sleep(60)  # Wait for 60 seconds before checking again
 
 if __name__ == '__main__':
+    # Create the daemon thread
+    t = threading.Thread(target=daemon_thread)
+    t.daemon = True  # Set the thread as a daemon
+    t.start()
+
+    # Start the Flask app
     app.run(host='0.0.0.0', port=5000)
