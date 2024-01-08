@@ -25,9 +25,9 @@ class _ReservationPageState extends State<ReservationPage> {
   final storage = FlutterSecureStorage();
   final _formKey = GlobalKey<FormState>();
   int selectedHours = 1; // Default to 1 hour
-  double totalPayment = 5.0; // Default payment for 1 hour
+  int totalPayment = 5; // Default payment for 1 hour
   var licensePlate = TextEditingController();
-  double parkingFeePerHour = 0.0;
+  int parkingFeePerHour = 0;
   // We are not in a page listed on the navigation bar.
   // Nevertheless, _selectIndex must be initialised.
   // Assign _selectedIndex to 0
@@ -82,7 +82,7 @@ class _ReservationPageState extends State<ReservationPage> {
                 setState(() {
                   selectedHours = newValue!;
                   // Update total payment based on the selected hours
-                  totalPayment = 5.0 * selectedHours.toDouble();
+                  totalPayment = parkingFeePerHour * selectedHours;
                 });
               },
               items: List.generate(24, (index) {
