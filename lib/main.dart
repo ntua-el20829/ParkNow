@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:park_now/route_generator.dart';
 
-
 // Λίστα στην οποία πρόκειται να προστεθούν οι διαθέσιμες κάμερες.
 late List<CameraDescription> cameras;
 

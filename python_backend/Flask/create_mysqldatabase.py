@@ -110,6 +110,7 @@ class Reservation(Base):
     license_plate = Column(String(8))
     accepted_transaction = Column(Boolean,default=False)
     is_valid = Column(Boolean,default=False)
+    checked = Column(Boolean,default=False)
     received_notification = Column(Boolean, default=False)  # New field
     time_of_arrival = Column(DateTime)  # New field
     estimated_departure_time = Column(DateTime)  # New field to store current time + X hours

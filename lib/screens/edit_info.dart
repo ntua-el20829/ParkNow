@@ -127,10 +127,11 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 20.0, right: 20.0, bottom: 20.0, top: 60.0),
+              padding: 
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               child: TextFormField(
                 controller: _passwordController,
+                obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),

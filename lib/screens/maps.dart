@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:park_now/global_server_config.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class Maps extends StatefulWidget {
   const Maps({Key? key}) : super(key: key);
@@ -20,6 +22,8 @@ class _MapsState extends State<Maps> {
   int _selectedIndex = 2;
   bool isLoading = true;
   List<dynamic> nearestParkings = [];
+
+  LatLng? userLocation;
 
   @override
   void initState() {
@@ -39,6 +43,31 @@ class _MapsState extends State<Maps> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User has not granted access or timed out')));
       Navigator.of(context).pushReplacementNamed('/');
+    }
+  }
+
+  Future<void> _getParkingDetails(int parkingId) async {
+    String? token = await storage.read(key: "jwt");
+    if (token == null || token.isEmpty) {
+      _showSnackBar('Authentication token not found.');
+      return;
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('http://${server}:${port}/parking/$parkingId'),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (response.statusCode == 200) {
+        final parkingDetails = json.decode(response.body)['parking'];
+        // Handle the parking details as needed
+        print('Parking details: $parkingDetails');
+      } else {
+        _showSnackBar('Failed to load parking details.');
+      }
+    } catch (e) {
+      _showSnackBar('Failed to get parking details: $e');
     }
   }
 
@@ -79,6 +108,11 @@ class _MapsState extends State<Maps> {
       // Get the current position
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
+
+      // Set the user's location as LatLng
+      setState(() {
+        userLocation = LatLng(position.latitude, position.longitude);
+      });
 
       var response = await http.post(
         Uri.parse('http://${server}:${port}/nearest_parkings'),
@@ -143,9 +177,9 @@ class _MapsState extends State<Maps> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
+        toolbarHeight: 140,
         title: SvgPicture.asset(
-          'assets/icons/logo.svg',
+          'assets/icons/full_logo.svg',
           fit: BoxFit.cover,
         ),
         centerTitle: true,
@@ -153,41 +187,93 @@ class _MapsState extends State<Maps> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : userId != null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/map_icon.svg',
-                      width: 100,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Welcome to Maps!',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Nearest Parkings:',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
+              ? SingleChildScrollView(
+                  // Wrap the Column in SingleChildScrollView
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height *
+                            0.50, // Adjust the height as needed
+                        child: GoogleMap(
+                          initialCameraPosition:
+                              CameraPosition(target: userLocation!, zoom: 13),
+                          markers: {
+                            Marker(
+                              markerId: MarkerId("_currentlocation"),
+                              icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueBlue),
+                              position: userLocation!,
+                            ),
+                            for (var parking in nearestParkings)
+                              Marker(
+                                markerId: MarkerId(
+                                    "_parkinglocation_${parking['_id']}"),
+                                icon: BitmapDescriptor.defaultMarker,
+                                position: LatLng(
+                                  parking['coordinates'][1], // Latitude
+                                  parking['coordinates'][0], // Longitude
+                                ),
+                              ),
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Nearest Parkings:',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      CarouselSlider.builder(
                         itemCount: nearestParkings.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                                nearestParkings[index]['name'] ?? 'Unknown'),
-                            onTap: () {
-                              Navigator.of(context).pushNamed('/parking_page',
-                                  arguments: nearestParkings[index]['_id']);
-                            },
+                        itemBuilder: (context, index, realIndex) {
+                          var parking = nearestParkings[index];
+                          List<dynamic> coordinates = parking['coordinates'];
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Card(
+                              child: ListTile(
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      parking['name'] ?? 'Unknown',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    Text(
+                                      'Total Spots: ${parking['capacity'] ?? 'Unknown'}',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                    Text(
+                                      'Fee per hour: ${parking['fee'] ?? 'Unknown'}',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                    '/parking_page',
+                                    arguments: parking['_id'],
+                                  );
+                                },
+                              ),
+                            ),
                           );
                         },
+                        options: CarouselOptions(
+                          height: 100,
+                          enableInfiniteScroll: false,
+                          initialPage: 0,
+                          viewportFraction: 0.8,
+                          enlargeCenterPage: true,
+                          onPageChanged: (index, reason) {},
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               : const CircularProgressIndicator(),
       bottomNavigationBar: BottomNavigationBar(

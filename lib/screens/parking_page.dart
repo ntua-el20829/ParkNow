@@ -146,10 +146,14 @@ class _ParkingPageState extends State<ParkingPage> {
                   )),
                   color: const Color.fromRGBO(153, 140, 230, 1),
                 ),
-                ListTile(
-                  title: const Text('Add to favourites'),
-                  onTap: toggleFavorite,
-                ),
+                 ListTile(
+                  leading: Icon(
+                    Icons.favorite,
+                    color: const Color.fromRGBO(153, 140, 230, 1),
+                  ),
+                    title: const Text('Add to favorites'),
+                    onTap: toggleFavorite,
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
