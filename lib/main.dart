@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:park_now/route_generator.dart';
+import 'package:park_now/services/notification_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 // Λίστα στην οποία πρόκειται να προστεθούν οι διαθέσιμες κάμερες.
 late List<CameraDescription> cameras;
@@ -19,6 +21,9 @@ Future<void> main() async {
 
   // Από τη λίστα που έχει επιστραφεί, παίρνουμε την πρώτη κάμερα
   firstCamera = cameras.first;
+
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
 
   runApp(const MyApp());
 }
