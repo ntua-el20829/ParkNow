@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:park_now/global_server_config.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _MoreScreenState extends State<MoreScreen> {
     }
 
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:5000/delete_account'),
+      Uri.parse('http://${server}:${port}/delete_account'),
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
@@ -92,7 +93,7 @@ class _MoreScreenState extends State<MoreScreen> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    'If you have any questions please contact us: contact@mail.com',
+                    'If you have any questions please contact us: contact@mail.parknow.com',
                     style: TextStyle(fontSize: 16, color: Colors.purple),
                   ),
                 ),
