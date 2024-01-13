@@ -1,0 +1,7 @@
+Flask
+Flask-Bcrypt
+SQLAlchemy
+Flask-JWT-Extended
+Flask-Cors
+pymongo
+mysqlclient

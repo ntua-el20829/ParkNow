@@ -676,6 +676,6 @@ if __name__ == '__main__':
     t = threading.Thread(target=daemon_thread)
     t.daemon = True  # Set the thread as a daemon
     t.start()
-
+    
     # Start the Flask app
     app.run(host='0.0.0.0', port=5000)
