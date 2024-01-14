@@ -148,7 +148,7 @@ class _ReservationPageState extends State<ReservationPage> {
         NotificationService().scheduleNotification(
           title: "Reservation Status",
           body: "${licensePlate.text}: Your reservation just expired!",
-          scheduledNotificationDateTime: DateTime.now().add(Duration(hours: selectedHours)));
+          hoursToAdd: selectedHours);
 
         _showSnackBar(
             'Reservation made successfully. Total fee: \$${totalPayment.toStringAsFixed(2)}');
