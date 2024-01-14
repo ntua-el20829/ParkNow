@@ -25,7 +25,7 @@ class NotificationService {
     0,
     title,
     body,
-    tz.TZDateTime.now(tz.local).add(Duration(minutes: hoursToAdd)),
+    tz.TZDateTime.now(tz.local).add(Duration(hours: hoursToAdd)),
     const NotificationDetails(
         android: AndroidNotificationDetails(
             'Reservations Channel ID', 'Reservations Channel Name',
