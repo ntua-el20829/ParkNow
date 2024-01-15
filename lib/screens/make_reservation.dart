@@ -7,7 +7,6 @@ import 'package:park_now/global_server_config.dart';
 import 'dart:convert';
 import 'package:park_now/main.dart';
 import 'package:park_now/screens/camera.dart';
-import 'package:park_now/services/notification_service.dart';
 
 class ReservationPage extends StatefulWidget {
   final int parkingId;
@@ -143,13 +142,6 @@ class _ReservationPageState extends State<ReservationPage> {
       );
 
       if (response.statusCode == 201) {
-
-        // Send a notification the moment the reservation expires
-        NotificationService().scheduleNotification(
-          title: "Reservation Status",
-          body: "${licensePlate.text}: Your reservation just expired!",
-          hoursToAdd: selectedHours);
-
         _showSnackBar(
             'Reservation made successfully. Total fee: \$${totalPayment.toStringAsFixed(2)}');
       } else {
