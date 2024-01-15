@@ -583,12 +583,10 @@ def reserve_parking():
     
     # Start a transaction
     try:
-        # Use the session to begin a transaction
-        session.begin()
 
         # Check if there is a record for the license_plate in the Car table
         car_exists = session.query(Car).filter(Car.license_plate == license_plate).first()
-
+         
         # Check if the user owns the car
         owns_car = session.query(UserCar).join(Car).filter(
             Car.license_plate == license_plate,
