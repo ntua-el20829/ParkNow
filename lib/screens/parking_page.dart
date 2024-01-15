@@ -170,7 +170,7 @@ class _ParkingPageState extends State<ParkingPage> {
                       horizontal: 16.0, vertical: 8.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/add_review',
+                      Navigator.of(context).pushReplacementNamed('/add_review',
                           arguments: widget.parkingId);
                     },
                     child: const Text('Add Review'),
@@ -186,7 +186,7 @@ class _ParkingPageState extends State<ParkingPage> {
                       minimumSize: const Size(100, 55),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/make_reservation',
+                      Navigator.of(context).pushReplacementNamed('/make_reservation',
                           arguments: ReservationPage(
                               parkingId: widget.parkingId,
                               initialValue: 'none'));
