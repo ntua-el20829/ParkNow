@@ -29,7 +29,7 @@ Future<void> main() async {
   NotificationService().initNotification();
   tz.initializeTimeZones();
 
-  // Get current time zone
+  // Get current time zone.
   final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
 
   // Set local location to match the current time zone
