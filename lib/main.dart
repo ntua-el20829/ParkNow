@@ -1,6 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:park_now/route_generator.dart';
+import 'package:park_now/services/notification_service.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 // Λίστα στην οποία πρόκειται να προστεθούν οι διαθέσιμες κάμερες.
 late List<CameraDescription> cameras;
@@ -11,6 +15,8 @@ late CameraDescription firstCamera;
 Future<void> main() async {
   
   // Πρέπει να βεβαιωθούμε ότι όλα τα plugins που θα χρησιμοποιήσουμε
+  // (για την κάμερα, τις ειδοποιήσεις κτλ) 
+  // έχουν αρχικοποιηθεί πριν καλέσουμε την runApp()
   // (για την κάμερα) έχουν αρχικοποιηθεί πριν καλέσουμε την runApp()
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -19,6 +25,16 @@ Future<void> main() async {
 
   // Από τη λίστα που έχει επιστραφεί, παίρνουμε την πρώτη κάμερα
   firstCamera = cameras.first;
+
+  // Initialise notifications and time zones
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
+
+  // Get current time zone.
+  final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+
+  // Set local location to match the current time zone
+  tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
   runApp(const MyApp());
 }
