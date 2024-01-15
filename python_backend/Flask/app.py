@@ -585,7 +585,20 @@ def reserve_parking():
     try:
         # Use the session to begin a transaction
         session.begin()
-        
+
+        # Check if there is a record for the license_plate in the Car table
+        car_exists = session.query(Car).filter(Car.license_plate == license_plate).first()
+
+        # Check if the user owns the car
+        owns_car = session.query(UserCar).join(Car).filter(
+            Car.license_plate == license_plate,
+            UserCar.user_id == user_id
+        ).first()
+
+        if not car_exists or not owns_car:
+            session.rollback()
+            return jsonify({'message': 'You have not registered this car!'}), 403
+                
         existing_reservation = session.query(Reservation).filter(
             Reservation.user_id == user_id,
             Reservation.parking_id == parking_id,
@@ -595,6 +608,17 @@ def reserve_parking():
         if existing_reservation:
             session.rollback()  # Rollback the transaction
             return jsonify({'message': 'You already have a valid reservation at this parking'}), 403
+                
+        # Check if the car has already an active reservation in another parking
+        car_already_parked = session.query(Reservation).filter(
+            Reservation.license_plate == license_plate,
+            Reservation.is_valid == True
+        ).first()
+
+        if car_already_parked:
+            session.rollback()
+            return jsonify({'message': 'There is already a reservation for this car!'}), 403
+
         # Check if the parking spot is available
         parking = session.query(Parking).filter_by(id=parking_id).with_for_update().first()
         if not parking or parking.number_of_spots_left <= 0:

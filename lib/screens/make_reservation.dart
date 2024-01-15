@@ -190,7 +190,9 @@ class _ReservationPageState extends State<ReservationPage> {
         leading: IconButton(
           icon: Image.asset('assets/images/back_arrow.png'),
           onPressed: () {
-            Navigator.of(context).pop(); // Use pop to navigate back
+            Navigator.of(context).pushReplacementNamed(
+              '/parking_page',
+              arguments: widget.parkingId,);
           },
         ),
         title: Center(

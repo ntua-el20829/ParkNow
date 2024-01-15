@@ -147,11 +147,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     });
 
     if (index == 0) {
-      // do nothing
+      Navigator.of(context).pushReplacementNamed('/profile');
     } else if (index == 1) {
       Navigator.of(context).pushReplacementNamed('/favourites');
     } else if (index == 2) {
-      // do nothing
+      Navigator.of(context).pushReplacementNamed('/maps');
     } else if (index == 3) {
       Navigator.of(context).pushReplacementNamed('/parked_cars');
     } else if (index == 4) {
