@@ -18,9 +18,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   List<Map<String, dynamic>> parkingHistory = [];
   bool isLoading = true;
 
-  // We are not in a page listed on the navigation bar.
-  // Nevertheless, _selectIndex must be initialised.
-  // Assign _selectedIndex to 0
   int _selectedIndex = 0;
 
   @override
@@ -73,8 +70,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // For example:
+
     if (index == 0) {
       Navigator.of(context).pushReplacementNamed('/profile');
     } else if (index == 1) {
@@ -101,7 +97,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         ),
         title: Center(
           child: SvgPicture.asset(
-            'assets/icons/logo.svg', // Replace with your logo image path
+            'assets/icons/logo.svg',
             fit: BoxFit.cover,
           ),
         ),

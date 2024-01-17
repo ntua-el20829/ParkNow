@@ -48,8 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // For example:
+
     if (index == 0) {
       // do nothing
     } else if (index == 1) {

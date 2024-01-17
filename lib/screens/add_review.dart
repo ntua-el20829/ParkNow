@@ -27,8 +27,7 @@ class _AddReviewState extends State<AddReview> {
     }
 
     var response = await http.post(
-      Uri.parse(
-          'http://${server}:${port}/my_reviews'), // Replace with your actual domain
+      Uri.parse('http://${server}:${port}/my_reviews'),
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
@@ -42,8 +41,8 @@ class _AddReviewState extends State<AddReview> {
 
     if (response.statusCode == 201) {
       _showSnackBar('Review added successfully.');
-      Navigator.of(context).pushReplacementNamed('/parking_page',
-                          arguments: widget.parkingId);
+      Navigator.of(context)
+          .pushReplacementNamed('/parking_page', arguments: widget.parkingId);
     } else {
       _showSnackBar(
           'Failed to add review. Status Code: ${response.statusCode}');
@@ -67,12 +66,11 @@ class _AddReviewState extends State<AddReview> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Image.asset('assets/images/back_arrow.png'),
-          onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/parking_page',
-                          arguments: widget.parkingId);
-          }
-        ),
+            icon: Image.asset('assets/images/back_arrow.png'),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/parking_page',
+                  arguments: widget.parkingId);
+            }),
         title: Text('Add Review'),
       ),
       body: Padding(

@@ -152,8 +152,7 @@ class _MapsState extends State<Maps> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // Example navigation logic (you will need to update this with actual routes)
+
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed('/profile');

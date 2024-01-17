@@ -143,12 +143,11 @@ class _ReservationPageState extends State<ReservationPage> {
       );
 
       if (response.statusCode == 201) {
-
         // Send a notification the moment the reservation expires
         NotificationService().scheduleNotification(
-          title: "Reservation Status",
-          body: "${licensePlate.text}: Your reservation just expired!",
-          hoursToAdd: selectedHours);
+            title: "Reservation Status",
+            body: "${licensePlate.text}: Your reservation just expired!",
+            hoursToAdd: selectedHours);
 
         _showSnackBar(
             'Reservation made successfully. Total fee: \$${totalPayment.toStringAsFixed(2)}');
@@ -168,7 +167,7 @@ class _ReservationPageState extends State<ReservationPage> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
+
     if (index == 0) {
       Navigator.of(context).pushReplacementNamed('/profile');
     } else if (index == 1) {
@@ -192,7 +191,8 @@ class _ReservationPageState extends State<ReservationPage> {
           onPressed: () {
             Navigator.of(context).pushReplacementNamed(
               '/parking_page',
-              arguments: widget.parkingId,);
+              arguments: widget.parkingId,
+            );
           },
         ),
         title: Center(

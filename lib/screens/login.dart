@@ -20,8 +20,7 @@ class _LoginState extends State<Login> {
   final storage = new FlutterSecureStorage();
 
   void loginUser(String email, String password) async {
-    var url = Uri.parse(
-        'http://${server}:${port}/login'); // Replace with your API endpoint
+    var url = Uri.parse('http://${server}:${port}/login');
     var response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},

@@ -10,13 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.3
+  http: ^1.1.2
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.9
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage: ^9.0.0
   jwt_decode: ^0.3.1
   flutter_rating_bar: ^4.0.1
-  geolocator: ^7.6.2 
+  geolocator: ^10.1.0 
   camera: ^0.10.5+8
   google_mlkit_text_recognition: ^0.11.0
   google_maps_flutter: ^2.5.0
@@ -28,7 +28,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true

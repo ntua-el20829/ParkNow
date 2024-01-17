@@ -58,7 +58,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://${server}:${port}/my_cars'), // Your API endpoint
+        Uri.parse('http://${server}:${port}/my_cars'),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token"

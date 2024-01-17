@@ -27,7 +27,7 @@ class _MyReviewsState extends State<MyReviews> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
+
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed('/profile');
@@ -177,10 +177,7 @@ class _MyReviewsState extends State<MyReviews> {
             ),
           ],
           currentIndex: _selectedIndex,
-
-      
           selectedItemColor: Colors.purple,
-
           onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
         ));

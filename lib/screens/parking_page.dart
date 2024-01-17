@@ -98,8 +98,7 @@ class _ParkingPageState extends State<ParkingPage> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // For example:
+
     if (index == 0) {
       Navigator.of(context).pushReplacementNamed('/profile');
     } else if (index == 1) {
@@ -146,14 +145,14 @@ class _ParkingPageState extends State<ParkingPage> {
                   )),
                   color: const Color.fromRGBO(153, 140, 230, 1),
                 ),
-                 ListTile(
+                ListTile(
                   leading: Icon(
                     Icons.favorite,
                     color: const Color.fromRGBO(153, 140, 230, 1),
                   ),
-                    title: const Text('Add to favorites'),
-                    onTap: toggleFavorite,
-                  ),
+                  title: const Text('Add to favorites'),
+                  onTap: toggleFavorite,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -186,7 +185,8 @@ class _ParkingPageState extends State<ParkingPage> {
                       minimumSize: const Size(100, 55),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacementNamed('/make_reservation',
+                      Navigator.of(context).pushReplacementNamed(
+                          '/make_reservation',
                           arguments: ReservationPage(
                               parkingId: widget.parkingId,
                               initialValue: 'none'));

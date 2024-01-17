@@ -33,7 +33,7 @@ class _MoreScreenState extends State<MoreScreen> {
 
     if (response.statusCode == 200) {
       _showSnackBar('Account deleted successfully.');
-      // Handle user account deletion (e.g., navigate to a login or home screen)
+
       Navigator.of(context).pushReplacementNamed('/');
     } else {
       _showSnackBar('Failed to delete account. Please try again.');
@@ -49,8 +49,7 @@ class _MoreScreenState extends State<MoreScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // For example:
+
     if (index == 0) {
       Navigator.of(context).pushReplacementNamed('/profile');
     } else if (index == 1) {

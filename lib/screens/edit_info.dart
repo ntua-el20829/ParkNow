@@ -64,8 +64,6 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
       _selectedIndex = index;
     });
 
-    // Implement navigation logic depending on the index
-    // Example navigation logic (you will need to update this with actual routes)
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed('/profile');
@@ -127,7 +125,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               ),
             ),
             Padding(
-              padding: 
+              padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               child: TextFormField(
                 controller: _passwordController,

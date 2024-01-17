@@ -17,7 +17,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   final storage = FlutterSecureStorage();
   List<dynamic> favouriteParkings = [];
   bool isLoading = true;
-  int _selectedIndex = 1; // Assuming Favorites is at index 1
+  int _selectedIndex = 1;
 
   @override
   void initState() {
@@ -95,8 +95,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // Example navigation logic (you will need to update this with actual routes)
+
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed('/profile');
