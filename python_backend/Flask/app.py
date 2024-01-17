@@ -86,7 +86,28 @@ def login():
     else:
         return jsonify({'message': 'Invalid username or password'}), 401
 
+@app.route('/my_username', methods=['GET'])
+@jwt_required()
+def my_username():
+    try:
+        current_user = get_jwt_identity()
+        user_id = int(current_user)  # Convert user ID to an integer
 
+        # Query the database to get the username based on the user ID
+        user = session.query(User).get(user_id)
+
+        if user:
+            return jsonify({
+                'username': user.username
+            }), 200
+        else:
+            return jsonify({'message': 'User not found in the database'}), 404
+
+    except Exception as e:
+        # Log the error for debugging purposes
+        print(f"An error occurred: {e}")
+        return jsonify({'message': f'Could not load your username: {e}'}), 500
+        
 
 @app.route('/favourites', methods=['GET', 'DELETE'])
 @jwt_required()
