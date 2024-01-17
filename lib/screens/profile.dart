@@ -19,7 +19,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _selectedIndex = 0; // Profile is at index 0
   String? username;
 
-
   @override
   void initState() {
     super.initState();
@@ -45,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // Load the username based on the userId
       await _loadUsername(userId!);
-
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User has not granted access or timed out')));
@@ -54,54 +52,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUsername(int userId) async {
-  String? token = await storage.read(key: "jwt");
+    String? token = await storage.read(key: "jwt");
 
-  if (token != null && token.isNotEmpty) {
-    try {
-      final Uri url = Uri.parse('http://${server}:${port}/my_username');
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+    if (token != null && token.isNotEmpty) {
+      try {
+        final Uri url = Uri.parse('http://${server}:${port}/my_username');
+        final response = await http.get(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        // Extract the username
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final String fetchedUsername = responseData['username'];
+        if (response.statusCode == 200) {
+          // Extract the username
+          final Map<String, dynamic> responseData = json.decode(response.body);
+          final String fetchedUsername = responseData['username'];
 
-        setState(() {
-          username = fetchedUsername;
-        });
-      } else {
+          setState(() {
+            username = fetchedUsername;
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load username: ${response.statusCode}'),
+            ),
+          );
+        }
+      } catch (e) {
+        print('An error occurred: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to load username: ${response.statusCode}'),
-          ),
+              content: Text('An error occurred while loading the username')),
         );
       }
-    } catch (e) {
-      print('An error occurred: $e');
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred while loading the username')),
+        SnackBar(content: Text('User has not granted access or timed out')),
       );
+      Navigator.of(context).pushReplacementNamed('/');
     }
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('User has not granted access or timed out')),
-    );
-    Navigator.of(context).pushReplacementNamed('/');
   }
-}
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    // Implement navigation logic depending on the index
-    // For example:
+
     if (index == 0) {
       // do nothing
     } else if (index == 1) {
