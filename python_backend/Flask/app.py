@@ -402,7 +402,7 @@ def my_history():
         .outerjoin(Favourite, (Favourite.parking_id == Parking.id) & (Favourite.user_id == user_id))\
         .outerjoin(Review, (Review.parking_id == Parking.id) & (Review.user_id == user_id))\
         .filter(Reservation.user_id == user_id).all()
-
+         
         history = []
         for reservation, license_plate, parking_name, fee, favourite_user_id, stars in user_reservations:
             history.append({
