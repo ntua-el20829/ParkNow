@@ -29,7 +29,9 @@ class NotificationService {
     const NotificationDetails(
         android: AndroidNotificationDetails(
             'Reservations Channel ID', 'Reservations Channel Name',
-            channelDescription: 'Notifications sent via this channel are about reservations status')),
+            channelDescription: 'Notifications sent via this channel are about reservations status',
+            importance: Importance.max,
+            priority: Priority.high,)),
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime);
