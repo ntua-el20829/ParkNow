@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:park_now/global_server_config.dart';
+import 'package:intl/intl.dart';
 
 class ParkedCarsScreen extends StatefulWidget {
   const ParkedCarsScreen({Key? key}) : super(key: key);
@@ -96,10 +97,11 @@ class _ParkedCarsScreenState extends State<ParkedCarsScreen> {
               itemCount: parkedCars.length,
               itemBuilder: (context, index) {
                 var car = parkedCars[index];
+                DateTime dateTime = DateTime.parse(car['time_of_arrival']);
                 return ListTile(
                   title: Text('Car with license plate ${car['license_plate']}'),
                   subtitle: Text(
-                      'is parked at ${car['parking_name']} since ${car['time_of_arrival']}'),
+                      'is parked at ${car['parking_name']} since ${DateFormat('dd/MM/yyyy kk:mm:ss').format(dateTime)}'),
                 );
               },
             ),

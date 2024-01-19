@@ -678,7 +678,6 @@ def reserve_parking():
         session.close()
 
 def check_reservations_and_update_spots():
-    session = DBSession()
     try:
         # Disable foreign key checks
         session.execute(text('SET FOREIGN_KEY_CHECKS=0;'))

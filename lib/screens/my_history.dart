@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:park_now/global_server_config.dart';
 
 class ParkingHistoryPage extends StatefulWidget {
@@ -63,7 +63,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     if (dateTimeString == null) return '';
 
     DateTime dateTime = DateTime.parse(dateTimeString);
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
+    return DateFormat('dd/MM/yyyy kk:mm').format(dateTime);
   }
 
   void _onItemTapped(int index) {
